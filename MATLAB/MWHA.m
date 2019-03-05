@@ -1,17 +1,17 @@
-function [y_1,y_2,y_3,y_or]=MWHA(x,xi,nf,dm,HiLo,thr,fet,high,low,yi)
+function [y_1,y_2,y_3,y_or]=MWHA(yi, xi, x, ylu, nf, dm, HiLo, thr, fet)
 %MWHA
 %
 % INPUTS
-% xi  : 已有节点坐标
-% x   : 待插值（滤波）的节点坐标
+% xi  : rowvec, 已有节点坐标
+% x   : rowvec, 待插值（滤波）的节点坐标
 % nf  : 谐波个数（默认值为1）
-% dm  : 支持域半径（默认值为7）
-% HiLo: 'Hi','Lo','none'.
-% thr : 判断低值点的阈值（NDVI设为0.1）
-% fet : 拟合误差（0.01）
-% high: 数据值域最高值（NDVI=1）
-% low : 数据值域最低值（NDVI=-1）
-% yi  : 单像素时间序列（列向量）
+% dm  : 支持域半径（默认值为100day/2, for SPOT 10-day NDVI is 5, for MODIS 16-day NDVI is 3）
+% HiLo: indicating rejection of -1: low, 1: high outliers. 
+% thr : 判断低值点的阈值(NDVI设为0.1)
+% fet : 拟合误差(0.01)
+% high: 数据值域最高值(NDVI=1）
+% low : 数据值域最低值(NDVI=-1)
+% yi  : colvec, 单像素时间序列（列向量）
 %
 % OUTPUTS
 % y_1:  iteration 1
@@ -27,8 +27,13 @@ function [y_1,y_2,y_3,y_or]=MWHA(x,xi,nf,dm,HiLo,thr,fet,high,low,yi)
 %   A Moving Weighted Harmonic Analysis Method for Reconstructing High-Quality 
 %   SPOT VEGETATION NDVI Time-Series Data. IEEE Trans. Geosci. Remote Sens. 53. 
 %   https://doi.org/10.1109/TGRS.2015.2431315
+low  = ylu(1);
+high = ylu(2);
+
 nnodes=length(xi);
 num_0=find(yi,1);
+
+HiLo = -HiLo; % keep consistent with HANTS
 
 if isempty(num_0)
     y_or=zeros(nnodes,1);

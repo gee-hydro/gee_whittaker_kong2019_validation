@@ -1,4 +1,4 @@
-function [yr, amp, phi] = HANTS(y, ts, HiLo, nf, ylu, nptperyear, fet, noutmax, delta)
+function [yr, amp, phi] = HANTS(y, ts, ylu, nf, HiLo, nptperyear, fet, noutmax, delta)
 % [yr, amp,phi] = HANTS(nptperyear,nf,y,ts,HiLo,low,high,fet,dod,delta)
 % HANTS processing
 % 
@@ -35,8 +35,8 @@ function [yr, amp, phi] = HANTS(y, ts, HiLo, nf, ylu, nptperyear, fet, noutmax, 
 %           fit are rejected)
 %   %%dod   = degree of overdeterminedness (iteration stops if number of
 %           points reaches the minimum required for curve fitting, plus
-%           dod). This is a safety measure. min n_remain = dod + nr
-%   noutmax = maximum throw-away points
+%           dod). This is a safety measure. min n_remain = dod + nr             
+%   noutmax = maximum throw-away points. nmaxout = n - ((dod + 2*nf + 1))
 %   delta = small positive number (e.g. 0.1) to suppress high amplitudes
 %
 % Outputs:

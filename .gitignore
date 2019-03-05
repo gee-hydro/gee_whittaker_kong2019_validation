@@ -25,3 +25,6 @@ hs_err_pid*
 *.lock
 *.vat.cpg
 *.vat.dbf
+
+*.csv
+data_test/
