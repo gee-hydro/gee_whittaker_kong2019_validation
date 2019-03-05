@@ -1,8 +1,8 @@
 # source('test/07_whit/whit_eval/main_whit_eval.R')
 library(rTIMESAT)
-source("test/stable/load_pkgs.R")
+source('G:/Github/phenology/phenology/load_pkgs.R')
 
-dir_whiteval <- "G:/Github/phenology/phenology/phenofit/data_test/whit_eval"
+# dir_whiteval <- "G:/Github/phenology/phenology/phenofit/data_test/whit_eval"
 dir_whiteval <- "F:/whit_eval"
 
 ngrid <- 1294700
@@ -67,7 +67,7 @@ plot_ref <- function(){
 
 #' Qiang Zhang, 2018, AFM, Eq.2
 der_k <- function(y) {
-    f1 <- c(0, diff(y)) 
+    f1 <- c(0, diff(y))
     f2 <- c(0, 0, diff(y, differences = 2))
     k  <- f2/((1+f1^2)^1.5)
     k
@@ -75,7 +75,7 @@ der_k <- function(y) {
 
 
 #' add_noise
-#' 
+#'
 #' QC variable also returned.
 #' Same as MOD13A1 SummaryQA, 0: good value, 3: cloud contaminated
 add_noise <- function(y, perc = 0.1, seed, I){
@@ -85,11 +85,11 @@ add_noise <- function(y, perc = 0.1, seed, I){
     if (missing(I) || is.null(I)) {
         I <- sample(1:n, ceiling(n*perc))
     }
-    
+
     n_noise <- length(I)
     # was random reduced by 5% - 40% with an interval of 5%
 
-    QC <- rep(0, n) 
+    QC <- rep(0, n)
     if (length(I) > 0){
         A_noise <- ceiling(runif(n_noise, 0.05, 0.4)/0.05)*0.05
 
@@ -100,7 +100,7 @@ add_noise <- function(y, perc = 0.1, seed, I){
 }
 
 #' simu_noise
-#' 
+#'
 #' simulate 100 times about \code{add_noise}
 #' @param type One of c("random", "real", "maxK", "maxDer")
 #' @param ntime Simulate how many times
@@ -118,11 +118,11 @@ simu_noise <- function(d, perc = 0.1, trans = TRUE, type, ntime = 100){
         f1 <- c(0, diff(y))
         I  <- c(which.max(f1), which.min(f1))
     }
-    
+
     r <- llply(1:ntime, function(i){ add_noise(y, perc, i, I) })
 
     if (trans) {
-        purrr::transpose(r) %>% map(~do.call(rbind, .)) 
+        purrr::transpose(r) %>% map(~do.call(rbind, .))
     } else {
         r
     }
@@ -131,9 +131,9 @@ simu_noise <- function(d, perc = 0.1, trans = TRUE, type, ntime = 100){
 
 #' TSF_process of TIMESAT
 #' Three curve fitting function (i.e. SG, AG and DL) in TIMESAT are used.
-TSF_main_df <- function(df_sim, perc = 0.1, nyear = 1, nptperyear = 23, 
+TSF_main_df <- function(df_sim, perc = 0.1, nyear = 1, nptperyear = 23,
     overwrite = TRUE, wait = TRUE, indir)
-{   
+{
     dir_root <- sprintf("%s/perc_%d", indir, perc*100)
     if (!dir.exists(dir_root)) dir.create(dir_root, recursive = TRUE)
     setwd(dir_root)

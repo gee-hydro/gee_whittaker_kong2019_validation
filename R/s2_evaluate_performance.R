@@ -30,7 +30,7 @@ gof_fitting <- function(mat_ref.sm, mat_sim_raw, I_rem){
 }
 
 ## MAIN SCRIPTS ----------------------------------------------------------------
-load(sprintf('%s/eval_simu_noise3.rda', dir_whiteval))
+load(sprintf('%s/noise3_random.rda', dir_whiteval))
 
 mat_ref.sm <- mat_ref[, 2:24] %>% as.matrix()
 ngrid_org  <- nrow(mat_ref.sm)
@@ -84,19 +84,19 @@ if (s2_TSF) {
     files_lst <- split(files, meths)
 
     lst_TS <- llply(files, data.table::fread, skip = 1, .progress = "text")
-    outfile_TSF <- sprintf('%s/gof_TSF_noises3.rda', dir_whiteval)
+    outfile_TSF <- sprintf('%s/gof_TSF_noises3_keypoint.rda', dir_whiteval)
 
-    gof_TSF <- foreach(mat_sim = lst_TS,
+    gof_TSF <- foreach(dat = lst_TS,
                        .packages = c("foreach", "iterators", "magrittr")) %dopar% {
         # foreach(file = files) %do% {
-            dat <- data.table::fread(file, skip = 1)
+            # dat <- data.table::fread(file, skip = 1)
             I_rem <- dat$V1
             mat_sim <- as.matrix(dat[, 3:25])
 
-            gof_fitting(mat_ref.sm, mat_sim)
+            gof_fitting(mat_ref.sm, mat_sim, I_rem)
         # }
-    }
-    save(gof_TSF, file = outfile)
+    } %>% set_names(basename(files) %>% gsub("fitting_|.txt", "", .))
+    save(gof_TSF, file = outfile_TSF)
 }
 map_dbl(gof_TSF, ~mean(.$RMSE, na.rm = T))
 # TSF_whit_eval_noise10_AG_fit.txt TSF_whit_eval_noise10_DL_fit.txt TSF_whit_eval_noise10_SG_fit.txt
@@ -117,7 +117,7 @@ if (s3_HANTS) {
 
     lst <- llply(files, data.table::fread, .progress = "text")
 
-    outfile_HANTS <- sprintf('%s/gof_HANTS_noises3.rda', dir_whiteval)
+    outfile_HANTS <- sprintf('%s/gof_HANTS_noises3_keypoints.rda', dir_whiteval)
 
     gof_HANTS <- foreach(mat_sim = lst,
                        .packages = c("foreach", "iterators", "magrittr")) %dopar% {
@@ -129,6 +129,6 @@ if (s3_HANTS) {
                            gof_fitting(mat_ref.sm, mat_sim)
                            # }
                        }
-    save(gof_HANTS, file = outfile)
+    save(gof_HANTS, file = outfile_HANTS)
 }
 map_dbl(gof_HANTS, ~mean(.$RMSE, na.rm = T))

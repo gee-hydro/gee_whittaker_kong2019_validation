@@ -92,7 +92,7 @@ load(file_noise_keypoint)
 
 Fig2 = FALSE
 if (Fig2){
-    InitCluster("log2.txt")
+    InitCluster("log.txt")
 
     # 1. random
     r <- foreach(perc = percs, df_sim = lst_sim, i = icount(),
@@ -104,7 +104,9 @@ if (Fig2){
 
     # 2. keypoint
     perc = 0.1
-    r <- foreach(type = types, df_sim = lst_noise_keypoint, i = icount(),
+    r <- foreach(df_sim = lst_noise_keypoint,
+                 type   = names(lst_noise_keypoint),
+                 i = icount(),
                  .packages = c("rTIMESAT")) %dopar% {
         # perc <- percs[i]
         # print(perc)
@@ -114,12 +116,22 @@ if (Fig2){
 
     ## tts to txt
     files <- dir(dir_whiteval, pattern = "*.tts", recursive = T, full.names = T)
-    r <- foreach(file = files, i = icount()) %do% {
+    # keypoint files
+    files <- files[-(7:15)]
+    outfiles <- files %>% gsub("F:/whit_eval/|(/perc_10/TSF_whit_eval_noise10)|_fit.tts", "", .) %>%
+        strsplit("_") %>%
+        {sprintf("%s/fitting_%s_%s.txt", dir_whiteval, map_chr(., ~.[2]), map_chr(., ~.[1]))}
+
+
+    r <- foreach(file = files, outfile = outfiles, i = icount()) %do% {
         # print(file)
-        TSF_fit2time(file, 1, 1e8, 1, 1, outdir = dir_whiteval, wait = F, indir = indir)
+        TSF_fit2time(file, 1, 1e8, 1, 1, wait = F,
+                     outdir = dir_whiteval, outfile = outfile)
     }
 }
 
+# files_fix <- basename(files) %>% gsub(".txt", "", .) %>% strsplit("_") %>%
+#     {sprintf("%s/fitting_%s_%s.txt", dirname(files), map_chr(., ~.[2]), map_chr(., ~.[1]))}
 
 ## 3. wWHIT curve fitting methods -----------------------------------
 rm_rownames <- . %>% set_rownames(NULL) %>% data.table::data.table()
@@ -182,6 +194,7 @@ if (Fig3){
 
     # 1208502 failed
     save(fit_wWHd, file = "fitting_wWHd_noises3.rda")
+    save(fit_wWHd, file = "fitting_wWHd_keypoints.rda")
 }
 
 # d <- dt[site == "CA-NS6", .(y = EVI/1e4, date, doy = yday(date),
