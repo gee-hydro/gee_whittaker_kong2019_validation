@@ -2,7 +2,6 @@
 # Dongdong Kong (2019-03-03)
 #
 # Input data was prepared by:
-# 'test/07_whit/whit_lambda/02_whit_lambda_main.R'
 source('R/main_whit_eval.R')
 
 gof_fitting <- function(mat_ref.sm, mat_sim_raw, I_rem){
@@ -38,9 +37,11 @@ ngrid_org  <- nrow(mat_ref.sm)
 ## 1. wWHd ---------------------------------------------------------------------
 s1_wWHd = FALSE
 outfile_wWHd <- sprintf('%s/gof_wWHd_noises3.rda', dir_whiteval)
+outfile_wWHd <- sprintf('%s/gof_wWHd_keypoint.rda', dir_whiteval)
 
 if (s1_wWHd) {
-    load(sprintf('%s/fitting_wWHd_noises3.rda', dir_whiteval))
+    # load(sprintf('%s/fitting_wWHd_noises3.rda', dir_whiteval))
+    load(sprintf('%s/fitting_wWHd_keypoint.rda', dir_whiteval))
 
     gof_wWHd <- foreach(fit_meth = fit_wWHd) %do% {
         foreach(perc = percs, mat_sim = fit_meth, .final = set_names2,
@@ -61,22 +62,6 @@ map_dbl(gof_wWHd, ~mean(.$RMSE, na.rm = T))
 ## 2. TSF ----------------------------------------------------------------------
 s2_TSF = TRUE
 if (s2_TSF) {
-
-    split_TSF <- function(lst){
-        meth <- names(lst) %>% str_extract(".{2}(?=_fit)")
-        split(lst, meth) %>% map(~set_names(., names(percs)))
-    }
-
-    gof <- split_TSF(gof_TSF) %>% rev()
-    gof <- c(gof_wWHd, list(HANTS = gof_HANTS), gof)
-
-    # The percentage of MAE < 0.03
-    map_dfr(gof, ~map_dbl(., ~nrow(.x[MAE < 0.03])/1294700))
-
-    x <- purrr::transpose(gof_wWHd)
-    x$`50%` %>% melt_list("meth") %>% cbind(I = 1:1294700, .) %>%
-        dcast(I~meth, value.var = "NSE") %>% plot(wWHd~wWH2, .)
-
     # InitCluster(5)
     # split into different methods
     files = dir(dir_whiteval, pattern = "*.txt$", full.names = T)
@@ -98,37 +83,41 @@ if (s2_TSF) {
     } %>% set_names(basename(files) %>% gsub("fitting_|.txt", "", .))
     save(gof_TSF, file = outfile_TSF)
 }
-map_dbl(gof_TSF, ~mean(.$RMSE, na.rm = T))
-# TSF_whit_eval_noise10_AG_fit.txt TSF_whit_eval_noise10_DL_fit.txt TSF_whit_eval_noise10_SG_fit.txt
-# 0.05700367                       0.04537478                       0.03228564
-# TSF_whit_eval_noise30_AG_fit.txt TSF_whit_eval_noise30_DL_fit.txt TSF_whit_eval_noise30_SG_fit.txt
-# 0.05657278                       0.04659388                       0.03333651
-# TSF_whit_eval_noise50_AG_fit.txt TSF_whit_eval_noise50_DL_fit.txt TSF_whit_eval_noise50_SG_fit.txt
-# 0.05778334                       0.05086983                       0.03605201
+# map_dbl(gof_TSF, ~mean(.$RMSE, na.rm = T))
 
-## 3. TSF ----------------------------------------------------------------------
+## 3. HANTS ----------------------------------------------------------------------
+eval_gof_HANTS <- function(indir, postfix = "keypoint"){
+    files <- dir(indir, pattern = "*.csv$", full.names = T)
+    names <- gsub('.csv$', '', basename(files))
+
+    lst <- llply(files, data.table::fread, .progress = "text")
+    # lst_rough <- llply(lst, coef_roughness) %>% set_names(names)
+
+    outfile_HANTS <- sprintf('%s/gof_HANTS_%s.rda', indir, postfix)
+
+    gof_HANTS <- foreach(mat_sim = lst,
+        .export = c("gof_fitting", 'rm_rownames', "mat_ref.sm"),
+        .packages = c("foreach", "iterators", "magrittr")) %dopar% {
+           # foreach(file = files) %do% {
+           # dat <- data.table::fread(file, skip = 1)
+           # I_rem <- dat$V1
+           # mat_sim <- as.matrix(dat[, 3:25])
+
+           gof_fitting(mat_ref.sm, mat_sim)
+           # }
+        } %>% set_names(names)
+    save(gof_HANTS, file = outfile_HANTS)
+}
+
 s3_HANTS = TRUE
 if (s3_HANTS) {
     # InitCluster(5)
     # split into different methods
-    files = dir(dir_whiteval, pattern = "*.csv$", full.names = T)
     # meths = str_extract(files, ".{2}(?=_fit)")
     # files_lst <- split(files, meths)
+    # indir <- dir_whiteval
 
-    lst <- llply(files, data.table::fread, .progress = "text")
-
-    outfile_HANTS <- sprintf('%s/gof_HANTS_noises3_keypoints.rda', dir_whiteval)
-
-    gof_HANTS <- foreach(mat_sim = lst,
-                       .packages = c("foreach", "iterators", "magrittr")) %dopar% {
-                           # foreach(file = files) %do% {
-                           # dat <- data.table::fread(file, skip = 1)
-                           # I_rem <- dat$V1
-                           # mat_sim <- as.matrix(dat[, 3:25])
-
-                           gof_fitting(mat_ref.sm, mat_sim)
-                           # }
-                       }
-    save(gof_HANTS, file = outfile_HANTS)
+    eval_gof_HANTS(paste0(dir_whiteval, '/noise_random'), postfix = 'random')
+    # eval_gof_HANTS(dir_whiteval, postfix = 'keypoint')
 }
-map_dbl(gof_HANTS, ~mean(.$RMSE, na.rm = T))
+# map_dbl(gof_HANTS, ~mean(.$RMSE, na.rm = T))

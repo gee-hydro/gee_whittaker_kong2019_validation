@@ -194,7 +194,7 @@ if (Fig3){
 
     # 1208502 failed
     save(fit_wWHd, file = "fitting_wWHd_noises3.rda")
-    save(fit_wWHd, file = "fitting_wWHd_keypoints.rda")
+    save(fit_wWHd, file = "fitting_wWHd_keypoint.rda")
 }
 
 # d <- dt[site == "CA-NS6", .(y = EVI/1e4, date, doy = yday(date),

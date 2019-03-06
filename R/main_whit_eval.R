@@ -1,5 +1,7 @@
 # source('test/07_whit/whit_eval/main_whit_eval.R')
 library(rTIMESAT)
+library(matrixStats)
+
 source('G:/Github/phenology/phenology/load_pkgs.R')
 
 # dir_whiteval <- "G:/Github/phenology/phenology/phenofit/data_test/whit_eval"
@@ -13,6 +15,14 @@ percs <- c(0.1, 0.3, 0.5) %>% set_names(paste0(.*100, "%"))
 rm_rownames <- . %>% set_rownames(NULL) %>% data.table::data.table()
 set_names2  <- . %>% set_names(names(percs))
 
+#' coef_roughness
+#' D2
+#'
+#' @param x matrix, [ngrid, ntime]
+coef_roughness <- function(x){
+    x <- as.matrix(x)
+    rowDiffs(x, differences = 2)^2 %>% rowSums2(na.rm = T)
+}
 
 #' get reference of site-doy
 get_reference <- function(y, is_good, prob = 0.85){
