@@ -51,7 +51,7 @@ gof_random  <- c(gof_wWHd, list(HANTS = gof_HANTS[1:3], MWHA = gof_HANTS[4:6]), 
     purrr::transpose()
 
 
-RMSE.random      <- map_dfr(gof_random, ~map_dfr(., ~mean(.x$RMSE, na.rm = T))) %>% add_percs()
+RMSE.random      <- map_dfr(gof_random, ~map_dfr(., ~mean(.x$NSE, na.rm = T))) %>% add_percs()
 RMSE_perc.random <- map_dfr(gof_random, ~map_dfr(., ~nrow(.x[RMSE < 0.05])/1294700)) %>% add_percs()
 
 
@@ -59,6 +59,36 @@ list(RMSE = rbind(RMSE.random, RMSE),
      perc = rbind(RMSE_perc.random, RMSE_perc)) %>%
     writelist_ToXlsx("eval_whit.xlsx")
 
+## add figures
+
+get_envelope <- function(
+    alphas = c(.05, .1, .25, .5),
+    group  = .(meth, index, iters, grp_perc))
+{
+    alphas <- c(.05, .1, .25, .5) %>% set_names(., .)
+    d_envelope <- llply(alphas, function(alpha){
+        # print(alpha)
+        expr <- substitute(quote(
+            res <- ddply_dt(d, .(quantile_envelope(RMSE, alpha)), group)
+        ), list(alpha = alpha, group = group))
+        # print(eval(expr))
+        browser()
+        eval(eval(expr))
+    })
+    d_envelope
+}
+
+d_enve <- d_envelope %>% melt_list("alpha")
+
+
+
+info <- df_ref[, .(N = sum(SummaryQA == "good")/23), .(site)]
+perc_good <- info$N
+
+d  <- gof_keypoint$real$wWHd %>% cbind(site = rep(info$site, each = 100), perc_good = rep(info$N, each = 100), .)
+
+ggplot(d, aes(perc_good, RMSE)) + geom_point() +
+    geom_smooth()
 # # The percentage of MAE < 0.03
 # map_dfr(gof, ~map_dbl(., ~nrow(.x[MAE < 0.03])/1294700))
 
