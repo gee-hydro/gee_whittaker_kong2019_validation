@@ -48,3 +48,5 @@ for i = 2:length(types)
 end                          
 
 % test about parallel
+
+run HANTS year by year

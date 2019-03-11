@@ -185,39 +185,73 @@ if (Fig5) {
     d_whit <- df[site %in% sites_sel & meth == "whit_fluxcam_wWH" & iters == "iter2" &
                      (date >= lim_date[1] & date <= lim_date[2])] # site == sitename &
     d_whit[, value := adjust_envelope(t, y, value, w, SummaryQA, type, trs)]
-
-    d <- d_whit[, .(site, date, t, y, w, SummaryQA)] %>% unique()
-    d$SummaryQA %<>% as.numeric()
-
-    mat_y  <- dcast(d, date~site, value.var = "y") %>% .[, -1] %>% as.matrix() %>% t()
-    mat_qc <- dcast(d, date~site, value.var = "SummaryQA") %>% .[, -1] %>% as.matrix() %>% t()
-
-
-    sitename <- "US-KS2"
-    d <- df[iters == "iter2" & site == sitename & meth == "whit_fluxcam_wWH", ]
-    d <- d[date >= lim_date[1] & date <= lim_date[2] & !duplicated(date), ]
-    d$SummaryQA %<>% as.numeric() # 1:4, good margin snow/ice cloud
+    d_whit$SummaryQA %<>% as.numeric()
+    d_whit[is.na(SummaryQA), `:=`(SummaryQA = 4)]
+    d_whit[is.na(y), y := 0.05]
+    d_whit[, c("QC_flag", "w") := qc_summary(SummaryQA-1, wmin = 0.2, wmid = 0.5, wmax = 0.8)]
 
     ## convert to QC_flag
-    d[, c("QC_flag", "w") := qc_summary(SummaryQA-1, wmin = 0.2, wmid = 0.5, wmax = 0.8)]
+    d <- d_whit[, .(site, date, t, y, w, QC_flag, SummaryQA)] %>% unique() %>%
+        merge(d_whit[, .(wWHd = mean(value)), .(site, date)])
 
-    r_SG <- TSF_main(d, nptperyear = 23, FUN = 1, half_win = 10, cache = F)
-    r_AG <- TSF_main(d, nptperyear = 23, FUN = 2, cache = F)
-    r_DL <- TSF_main(d, nptperyear = 23, FUN = 3, cache = F)
+    setwd("TSF")
+
+    tonum <- . %>% as.matrix() %>% as.numeric()
+
+    r_SG <- TSF_main(d, "rep11_SG", nptperyear = 23, 17, FUN = 1, half_win = 6, cache = T) %>% tonum()
+    r_AG <- TSF_main(d, "rep11_SG", nptperyear = 23, 17, FUN = 2, cache = T) %>% tonum()
+    r_DL <- TSF_main(d, "rep11_SG", nptperyear = 23, 17, FUN = 3, cache = T) %>% tonum()
+    HANTS <- fread("../MATLAB/HANTS_TSM_rep11_y.txt") %>% tonum
+
+    pdat_all <- cbind(d, SG=r_SG, DL=r_DL, AG=r_AG, HANTS)
+    pdat <- pdat_all %>% merge(st[site %in% sites_sel, .(site, titlestr)], by = "site")
+
+    # performance index with GPP
+    d <- pdat_all[, -c(3:7)] %>% melt(c("site", "date"), variable.name = "meth") %>%
+        merge(d_whit[, .(site, date, GPP_NT, GPP_DT)] %>% unique(), by = c("site", "date"))
+    d[, as.list(GOF(GPP_NT, value, include.r = TRUE)), .(meth)]
+
+    # %>% show_col()
+    {
+        lim_year2 <- c(2001, 2006)
+        lim_date2 <- lim_year2 %>% paste(c("-01-01", "-12-31"), sep = "") %>% as.Date()
+        colors <- RColorBrewer::brewer.pal(11, "Paired")[c(2, 4, 6, 8)] %>%
+            c("black", .)
+
+        source('../R/TSF_main.R')
+        g <- show_fitting(pdat[date >= lim_date2[1] & date <= lim_date2[2], ],
+                          methods = c("wWHd", "HANTS", "SG", "AG", "DL"))
+        # write_fig(g, "FIg5_rep10.pdf", 9, 7)
+        write_fig(g, "FIg5_rep10.svg", 9, 7)
+        # write_fig(g, "FIg5_rep10.tif", 9, 7)
+    }
+
 }
-## wWHIT
-l <- check_input(d$t, d$y, d$w, nptperyear=23)
-r_wWHIT <- wWHIT(l$y, l$w, l$ylu, nptperyear = 23,
-                 wFUN = wBisquare, iters = 3, lambda = 10)
-df_whit <- r_wWHIT$zs %>% as.data.frame()
 
-pdat <- d[, wWHd := value]
-pdat$SG <- r_SG$fit$v1
-pdat$AG <- r_AG$fit$v1
-pdat <- cbind(pdat, df_whit)
-p <- show_fitting(pdat, methods = c("SG", "ziter1", "ziter2", "ziter3", "AG"),
-                  colors = c("red", "blue", "green", "purple",  "black"), show.legend = T)
-write_fig(p, "lambda_10.pdf", 10, 4)
+# HANTS from MATLAB
+HANTS = TRUE
+if (HANTS) {
+
+}
+
+
+## wWHIT
+debug_wWHd = FALSE
+if (debug_wWHd) {
+    l <- check_input(d$t, d$y, d$w, nptperyear=23)
+    r_wWHIT <- wWHIT(l$y, l$w, l$ylu, nptperyear = 23,
+                     wFUN = wBisquare, iters = 3, lambda = 10)
+    df_whit <- r_wWHIT$zs %>% as.data.frame()
+
+    pdat <- d[, wWHd := value]
+    pdat$SG <- r_SG$fit$v1
+    pdat$AG <- r_AG$fit$v1
+    pdat <- cbind(pdat, df_whit)
+    p <- show_fitting(pdat, methods = c("SG", "ziter1", "ziter2", "ziter3", "AG"),
+                      colors = c("red", "blue", "green", "purple",  "black"), show.legend = T)
+    write_fig(p, "lambda_10.pdf", 10, 4)
+}
+
 # check_Whittaker(sitename, df_trim, "gee_whit_flux.pdf", "whit_fluxcam_wWH")
 # merge_pdf('../whit_phenoflux166.pdf', indir = './')
 # merge_pdf('whit_phenoflux166.pdf', indir = 'Figure/')
@@ -259,18 +293,17 @@ write_fig(p, "lambda_10.pdf", 10, 4)
 # ggplot_dual_axis(p1, p2) #%>% as.ggplot() p <-
 # ggplot_dual_axis(p3, p0, add_yaxis_r = F)
 
-
 ## check marginal point
-d <- df[meth == "AG" & iters == "iter1"]
-d[, doy := yday(date)]
-
-d_sel <- d[site %in% sites_sel, ]
-ggplot(d_sel, aes(doy, y, color = SummaryQA, fill = SummaryQA)) +
-    geom_point(aes(shape = SummaryQA)) +
-    geom_smooth(data = d_sel[SummaryQA %in% c("good", "margin")]) +
-    facet_wrap(~site, scales = "free_y") +
-    scale_shape_manual(values = qc_shapes) +
-    scale_color_manual(values = qc_colors) +
-    scale_fill_manual(values = qc_colors)
-
+# d <- df[meth == "AG" & iters == "iter1"]
+# d[, doy := yday(date)]
+#
+# d_sel <- d[site %in% sites_sel, ]
+# ggplot(d_sel, aes(doy, y, color = SummaryQA, fill = SummaryQA)) +
+#     geom_point(aes(shape = SummaryQA)) +
+#     geom_smooth(data = d_sel[SummaryQA %in% c("good", "margin")]) +
+#     facet_wrap(~site, scales = "free_y") +
+#     scale_shape_manual(values = qc_shapes) +
+#     scale_color_manual(values = qc_colors) +
+#     scale_fill_manual(values = qc_colors)
+#
 
