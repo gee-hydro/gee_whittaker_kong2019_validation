@@ -2,7 +2,7 @@
 library(rTIMESAT)
 library(matrixStats)
 
-source('G:/Github/phenology/phenology/load_pkgs.R')
+source('G:/Github/phenology/phenology/phenofit/test/load_pkgs.R')
 
 # dir_whiteval <- "G:/Github/phenology/phenology/phenofit/data_test/whit_eval"
 dir_whiteval <- "F:/whit_eval"

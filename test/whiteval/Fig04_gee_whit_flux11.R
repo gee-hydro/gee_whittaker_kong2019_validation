@@ -79,15 +79,21 @@ if (!file.exists(file)) {
     load(file)
 }
 
+# land cover homogeneous
+st2 <- fread("file:///G:/Github/phenology/phenology/data/flux/station/st_flux97.csv")
+sites2 <- st2[order(factor(IGBP, IGBPnames_006))]$site
+sites <- c(sites2, sites_sel) %>% unique()
+sites <- st[site %in% sites, ]$site
+
 # FR-Pue, AU-Dry, US-KS2
 sites_sel <- c("RU-Fyo", "GF-Guy", "US-UMB", "CN-Cha",
     "US-Whs", "AU-How", "ZA-Kru", "CN-HaM", "US-Los", "DE-Geb") # rm
 {
-    # st_flux <- st[site %in% sites]
-    # st_flux[match(sites_sel, site), `:=`(selected = 1, label = sprintf("(%s) %s",
-    #     letters[1:.N], IGBPname))]
-    # df2sp(st_flux) %>%
-    # rgdal::writeOGR('.', "st_flux101", drive = "ESRI Shapefile")
+    st_flux <- st[site %in% sites]
+    st_flux[match(sites_sel, site), `:=`(selected = 1, label = sprintf("(%s) %s",
+        letters[1:.N], IGBPname))]
+    df2sp(st_flux) %>%
+    rgdal::writeOGR('.', "st_flux101", drive = "ESRI Shapefile", overwrite_layer = TRUE)
     # df2sp(st_cam) %>% writePointsShape('st_cam133.shp')
 }
 
@@ -151,12 +157,6 @@ adj_envelope <- function(){
     # all.equal(df_adj, df)
     return(df_adj)
 }
-
-# land cover homogeneous
-st2 <- fread("file:///G:/Github/phenology/phenology/data/flux/station/st_flux97.csv")
-sites2 <- st2[order(factor(IGBP, IGBPnames_006))]$site
-sites <- c(sites2, sites_sel) %>% unique()
-sites <- st[site %in% sites, ]$site
 
 # adjust version
 source('R/improve_Whittaker.R')

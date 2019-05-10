@@ -70,6 +70,7 @@ roughs <- c(rough_wWHd_fix, rough_HANTS_fix, rough_TSF_fix) %>%
     map(~set_names(., ROWNAMES)) %>%
     purrr::transpose()
 
+
 rough <- map_dfr(roughs, ~map_dfr(.x, mean, na.rm = TRUE)) %>%
     .[, c(1, 4, 8, 6, 7, 2:3, 5)] %>%
     cbind(type = ROWNAMES, .)
@@ -77,7 +78,41 @@ rough_perc <- map_dfr(roughs, ~map_dfr(.x, ~sum(.<0.01, na.rm=TRUE)/ngrid)) %>%
     .[, c(1, 4, 8, 6, 7, 2:3, 5)] %>%
     cbind(type = ROWNAMES, .)
 
-
 list(rough = rough,
      rough_perc = rough_perc) %>%
     writelist_ToXlsx("gof_whit_rough.xlsx")
+
+# 3.2 diff ----------------------------------------------------------------
+
+diff_lst <- foreach(lst = roughs) %do% {
+    wWHd <- lst[[1]]
+    map(lst[-1], ~ (.- wWHd)) #%>% melt_list("meth")
+} %>% set_names(names(roughs))
+
+
+trans_diff <- function(d){
+    d <- data.table(d)
+    methods <- c("HANTS", "SG", "AG", "DL")
+
+    # browser()
+    d <- d[meth %in% methods, ]
+    d$meth %<>% factor(methods)
+    d[order(type, meth), ]
+}
+
+{
+    delta <- 0.002
+    rough_levels <- c(-Inf, -delta, delta, Inf)
+
+    diff_rough <- map(diff_lst, function(lst){
+        r <- llply(lst, function(x){
+            table(cut(x, rough_levels))/ngrid
+        })
+        do.call(rbind, r) %>% data.table() %>% cbind(meth = names(r), .)
+    }) %>% melt_list("type")
+
+
+    writelist_ToXlsx(list(rough = trans_diff(diff_rough)), "diff_rough.xlsx")
+}
+
+# diff_NSE  <- map(diff_lst, ~.x[, as.list(table(cut(NSE , NSE_levels))/ngrid*100), .(meth)])

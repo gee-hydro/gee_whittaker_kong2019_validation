@@ -26,5 +26,17 @@ hs_err_pid*
 *.vat.cpg
 *.vat.dbf
 
+# R files
+.Rproj.user
+.RData
+.Rhistory
+log.txt
+
+# data
 *.csv
+*.xlsx
 data_test/
+*.rda
+*.pdf
+
+TSF/
