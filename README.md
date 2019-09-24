@@ -107,4 +107,4 @@ methods](https://github.com/kongdd/phenofit/blob/master/R/wFUN.R).
 
 # Acknowledgements
 
-Keep in mind that this repository is released under a GPL2 license.
+Keep in mind that this repository is released under a GPL3 license.
