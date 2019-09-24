@@ -1,6 +1,9 @@
 # source('test/07_whit/main_TSF.R')
 
-#' @param FUN
+#' TSF_main
+#' @param FUN Fitting method (1/2/3): (SG/AG/DL)
+#' 
+#' @export
 TSF_main <- function(d, job_name, nptperyear = 23, nyear,
   FUN = 2, iters = 3, half_win = floor(nptperyear/4), cache = T)
 {
@@ -85,6 +88,7 @@ TSF_main <- function(d, job_name, nptperyear = 23, nyear,
 # 3: 2004-02-16 0.3801    good 0.3776879 0.3588165 0.3557184
 # 4: 2004-03-01 0.3556    good 0.3792459 0.3589701 0.3524135
 # 5: 2004-03-19 0.2936    good 0.3830829 0.3617738 0.3541164
+#' @export
 show_fitting <- function(pdat, methods = c("SG", "AG", "value"), colors, show.legend = T){
     qc_colors <- phenofit:::qc_colors
     qc_shapes <- phenofit:::qc_shapes

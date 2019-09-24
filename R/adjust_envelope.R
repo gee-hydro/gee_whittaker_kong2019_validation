@@ -10,13 +10,14 @@
 #' 2. In middle growing season.
 #' 3. only good values.
 #'
-#' @inheritParams check_input
+#' @inheritParams phenofit::check_input
 #' @param t Date object, corresponding date of y. If specified, yearly $ylu$ will
 #' be calculated, which is used to filter peak season.
 #' @param QC_flag Quality Control (QC) flag of original vegetation time-series y.
 #' @param ylu Numeric, lower and upper boundary of y.
 #' @param type Character, ylu get by "y" or "z".
 #'
+#' @export
 adjust_envelope <- function(t, y, z, w, QC_flag, type = "y", trs = 0.5,
     alpha = 0.02, wmin = 0.2)
 {

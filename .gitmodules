@@ -1,0 +1,3 @@
+[submodule "whittaker"]
+	path = whittaker
+	url = https://github.com/kongdd/whittaker
