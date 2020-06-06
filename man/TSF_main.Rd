@@ -4,8 +4,16 @@
 \alias{TSF_main}
 \title{TSF_main}
 \usage{
-TSF_main(d, job_name, nptperyear = 23, nyear, FUN = 2, iters = 3,
-  half_win = floor(nptperyear/4), cache = T)
+TSF_main(
+  d,
+  job_name,
+  nptperyear = 23,
+  nyear,
+  FUN = 2,
+  iters = 3,
+  half_win = floor(nptperyear/4),
+  cache = T
+)
 }
 \arguments{
 \item{FUN}{Fitting method (1/2/3): (SG/AG/DL)}

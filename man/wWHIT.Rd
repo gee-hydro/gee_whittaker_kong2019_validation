@@ -4,8 +4,17 @@
 \alias{wWHIT}
 \title{Weigthed Whittaker Smoother}
 \usage{
-wWHIT(y, w, ylu, nptperyear, wFUN = wBisquare, iters = 1,
-  lambda = 15, second = FALSE, ...)
+wWHIT(
+  y,
+  w,
+  ylu,
+  nptperyear,
+  wFUN = wBisquare,
+  iters = 1,
+  lambda = 15,
+  second = FALSE,
+  ...
+)
 }
 \arguments{
 \item{y}{Numeric vector, vegetation index time-series}

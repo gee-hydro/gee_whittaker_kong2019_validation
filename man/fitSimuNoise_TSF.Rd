@@ -4,8 +4,14 @@
 \alias{fitSimuNoise_TSF}
 \title{fitSimuNoise_TSF}
 \usage{
-fitSimuNoise_TSF(lst_noise_random, lst_noise_keypoint, nptperyear, nyear,
-  indir, ...)
+fitSimuNoise_TSF(
+  lst_noise_random,
+  lst_noise_keypoint,
+  nptperyear,
+  nyear,
+  indir,
+  ...
+)
 }
 \arguments{
 \item{...}{ignored}

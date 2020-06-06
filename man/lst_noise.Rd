@@ -4,18 +4,20 @@
 \name{lst_noise}
 \alias{lst_noise}
 \title{Simulated random noise and keypoint noise.}
-\format{An object of class \code{list} of length 6.}
+\format{
+An object of class \code{list} of length 6.
+}
 \usage{
 lst_noise
 }
 \description{
-10\%, 30\% and 50\% simulated random noise and 3 type keypoint noise.
+10\\%, 30\\% and 50\\% simulated random noise and 3 type keypoint noise.
 }
 \details{
 Each noise contains two variables:
 \itemize{
 \item \strong{\code{y}:} vegetation enhanced index (EVI) time-series
-\item \strong{\code{QC}:} in the range of \code{[0-3]}, see \code{qc_summary}
+\item \strong{\code{QC}:} in the range of \verb{[0-3]}, see \code{qc_summary}
 }
 }
 \examples{

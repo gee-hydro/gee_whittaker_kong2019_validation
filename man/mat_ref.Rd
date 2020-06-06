@@ -4,7 +4,9 @@
 \name{mat_ref}
 \alias{mat_ref}
 \title{matirx of Reference curve used to evaluate GOF.}
-\format{An object of class \code{matrix} with 100 rows and 23 columns.}
+\format{
+An object of class \code{matrix} (inherits from \code{array}) with 100 rows and 23 columns.
+}
 \usage{
 mat_ref
 }

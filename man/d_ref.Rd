@@ -4,7 +4,9 @@
 \name{d_ref}
 \alias{d_ref}
 \title{data.frame of Reference curve used to simulate noises.}
-\format{An object of class \code{data.table} (inherits from \code{data.frame}) with 46 rows and 4 columns.}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 46 rows and 4 columns.
+}
 \usage{
 d_ref
 }

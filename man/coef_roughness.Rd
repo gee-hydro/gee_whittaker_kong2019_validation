@@ -7,7 +7,7 @@
 coef_roughness(x)
 }
 \arguments{
-\item{x}{matrix, \code{[ngrid, ntime]}}
+\item{x}{matrix, \verb{[ngrid, ntime]}}
 }
 \value{
 \code{Roughness = diff(x)^2}

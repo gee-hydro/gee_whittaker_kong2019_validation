@@ -7,9 +7,9 @@
 gof_fitting(mat_ref, mat_fit, I_rem, times = 100)
 }
 \arguments{
-\item{mat_ref}{matrix of reference curvr \code{[ngrid, ntime]}}
+\item{mat_ref}{matrix of reference curvr \verb{[ngrid, ntime]}}
 
-\item{mat_fit}{matrix of fitted time-series \code{[ngrid, ntime]}}
+\item{mat_fit}{matrix of fitted time-series \verb{[ngrid, ntime]}}
 
 \item{I_rem}{index of succeed fitted pixels.}
 

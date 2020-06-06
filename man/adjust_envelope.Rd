@@ -4,8 +4,17 @@
 \alias{adjust_envelope}
 \title{adjust_envelope}
 \usage{
-adjust_envelope(t, y, z, w, QC_flag, type = "y", trs = 0.5,
-  alpha = 0.02, wmin = 0.2)
+adjust_envelope(
+  t,
+  y,
+  z,
+  w,
+  QC_flag,
+  type = "y",
+  trs = 0.5,
+  alpha = 0.02,
+  wmin = 0.2
+)
 }
 \arguments{
 \item{t}{Date object, corresponding date of y. If specified, yearly $ylu$ will
@@ -20,7 +29,7 @@ weights of all \code{NA} values will be \code{wmin}, the others will be 1.0.}
 
 \item{type}{Character, ylu get by "y" or "z".}
 
-\item{alpha}{Double value in \code{[0,1]}, quantile prob of ylu_min.}
+\item{alpha}{Double value in \verb{[0,1]}, quantile prob of ylu_min.}
 
 \item{wmin}{Double, minimum weight of bad points, which could be smaller
 the weight of snow, ice and cloud.}

@@ -4,9 +4,16 @@
 \alias{fitSimuNoise_WHIT}
 \title{fitSimuNoise_WHIT}
 \usage{
-fitSimuNoise_WHIT(lst_noise, lambdas = NULL, nptperyear = 23,
-  wmin = 0.2, ..., outdir = "./OUTPUT", is_save = FALSE,
-  limits = NULL)
+fitSimuNoise_WHIT(
+  lst_noise,
+  lambdas = NULL,
+  nptperyear = 23,
+  wmin = 0.2,
+  ...,
+  outdir = "./OUTPUT",
+  is_save = FALSE,
+  limits = NULL
+)
 }
 \arguments{
 \item{lst_noise}{list of simulated random and keypoint noise, \code{list(list(y, QC))}}

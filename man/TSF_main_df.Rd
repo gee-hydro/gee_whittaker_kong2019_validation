@@ -5,8 +5,15 @@
 \title{TSF_process of TIMESAT
 Three curve fitting function (i.e. SG, AG and DL) in TIMESAT are used.}
 \usage{
-TSF_main_df(df_sim, perc = 0.1, nyear = 1, nptperyear = 23,
-  overwrite = TRUE, wait = TRUE, indir)
+TSF_main_df(
+  df_sim,
+  perc = 0.1,
+  nyear = 1,
+  nptperyear = 23,
+  overwrite = TRUE,
+  wait = TRUE,
+  indir
+)
 }
 \description{
 TSF_process of TIMESAT

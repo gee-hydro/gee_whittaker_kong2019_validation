@@ -4,8 +4,16 @@
 \alias{rough_fitting}
 \title{rough_fitting}
 \usage{
-rough_fitting(sitename, df, st, .FUN = wWHIT, lambda = NULL,
-  IsPlot = FALSE, print = FALSE, ...)
+rough_fitting(
+  sitename,
+  df,
+  st,
+  .FUN = wWHIT,
+  lambda = NULL,
+  IsPlot = FALSE,
+  print = FALSE,
+  ...
+)
 }
 \arguments{
 \item{lambda}{Unless lambda is constant, lambda should be null.}
