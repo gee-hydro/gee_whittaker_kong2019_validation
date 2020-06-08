@@ -27,6 +27,6 @@ RESULT/
 # data
 *.csv
 *.xlsx
-data_test/
+data-raw/
 *.rda
 *.pdf

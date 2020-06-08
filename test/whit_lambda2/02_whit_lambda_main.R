@@ -1,38 +1,40 @@
-source("test/load_pkgs.R")
-source('test/07_whit/whit_lambda/smooth_whit_lambda.R')
+source("test/main_pkgs.R")
 # source('R/smooth_whit_lambda.R')
 # source('test/07_whit/whit_lambda/02_whit_lambda_main.R')
 # source('R/smooth_whit.R')
 # source('test/GEE/V-pack.r')
-
 nptperyear <- 23
-
 # file ="data_test/whit_lambda/MOD13A1_st_1e3_20180725.rda"
-file ="data-raw/whit_lambda/MOD13A1_st_1e3_20180731.rda"
+file ="data-raw/whit_lambda/MOD13A1_st_1e3_20200608.rda"
 
 if (file.exists(file)){
     load(file)
 }else{
     library(sf)
 
-    indir <- "data_test/whit_lambda/raw-csv/mask/"
-    files <- dir(indir, "*.csv", full.names = T)
+    indir <- "data-raw/whit_lambda/raw-csv-v20200608"
+    files <- dir(indir, "EVI.*.csv", full.names = T)
 
     lst <- llply(files, fread, .progress = "text")
-    dt <- do.call(rbind, lst)
+    ncols = sapply(lst, ncol)
+    I_bad = which(ncols < 9)
+    files[I_bad]
+    dt  <- do.call(rbind, lst) %>% unique()
 
+    # d <- dt[1:1e3, ]
+    # d[, c("QC_flag", "w") := qc_summary(SummaryQA)]
     dt[, `:=`(
-        t = str_sub(`system:index`, 1, 10) %>% ymd,
+        # t = str_sub(`system:index`, 1, 10) %>% ymd,
         index = str_sub(`system:index`, 12, 31),
-        w = qc_summary(SummaryQA, wmin = 0.2),
-        SummaryQA = factor(SummaryQA, levels = qc_values, labels = qc_levels),
+        # w = qc_summary(SummaryQA, wmin = 0.2),
+        # SummaryQA = factor(SummaryQA, levels = qc_values, labels = qc_levels),
         `system:index` = NULL,
         .geo = NULL
     )]
-    setkeyv(dt, c("index", "t"))
+    setkeyv(dt, c("index", "date"))
 
     # site info
-    st <- read_sf("data_test/whit_lambda/shp/st_1e3_mask.shp") %>% data.table() %>% .[, 1:3]
+    st <- read_sf("data-raw/whit_lambda/shp/st_1e3_gee.shp") %>% data.table() %>% .[, 1:3]
 
     df <- merge(st, dt, by = "index")
     df <- df[order(site), .(site, y = EVI/1e4, t, w, SummaryQA)]

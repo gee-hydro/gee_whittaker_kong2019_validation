@@ -13,7 +13,5 @@ writePointsShape(sp, "st_1e3.shp")
 file_left = "F:/Github/lc_005/grid/MCD12Q1_2010_006_20_left.tif"
 r <- read_stars(file_left) %>% st_as_sfc
 
-
 res <- over(sp[, "IGBPcode"], r)
-
 r <- rgdal::readGDAL(file_left)

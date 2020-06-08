@@ -167,6 +167,5 @@ get_formula <- function(){
         cat %T>% writeLines("clipboard")
 }
 
-
 # yearly: lambda <- 0.7835 +1.5959*mean -4.0371*sd +0.0048*cv -0.1032*skewness +0.0036*kurtosis
 # 4-year: lambda <- 0.8209 +1.5008*mean -4.0286*sd -0.1017*skewness -0.0041*kurtosis

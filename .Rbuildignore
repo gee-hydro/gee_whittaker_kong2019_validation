@@ -7,3 +7,4 @@
 ^Figures$
 ^LICENSE\.md$
 ^appveyor\.yml$
+^data-raw$
