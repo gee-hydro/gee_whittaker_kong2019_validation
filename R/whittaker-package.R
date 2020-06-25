@@ -1,8 +1,7 @@
 #' @import rTIMESAT magrittr ggplot2 data.table
 #' @import foreach iterators
-#' @import phenofit
 #' 
-#' @importFrom Ipaper write_fig runningId rm_empty
+#' @importFrom Ipaper runningId rm_empty
 #' @importFrom purrr map map_chr is_empty
 #' @importFrom stringr str_extract 
 #' @importFrom lubridate ymd parse_date_time

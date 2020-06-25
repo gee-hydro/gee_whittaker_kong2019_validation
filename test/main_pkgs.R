@@ -6,6 +6,9 @@ suppressMessages({
     library(magrittr)
     library(maptools)
 
+    library(glue)
+    library(lubridate)
+
     library(foreach)
     library(iterators)
 
@@ -29,13 +32,13 @@ file_noise_keypoint <- sprintf("%s/noise3_keypoint.rda", dir_whiteval) # and rea
 
 
 {
-    theme_kong <- theme_grey(base_size = 14) + 
-        theme(panel.grid.minor = element_blank(), 
-            panel.grid.major = element_line(size = 0.3)) 
-    # theme(legend.position = "none", panel.grid = element_blank()))    
+    theme_kong <- theme_grey(base_size = 14) +
+        theme(panel.grid.minor = element_blank(),
+            panel.grid.major = element_line(size = 0.3))
+    # theme(legend.position = "none", panel.grid = element_blank()))
     theme_set(theme_kong)
 }
-    
+
 # ------------------------------------------------------------------------------
 fix_whit <- function(){
     I_missing <- c(1208502, 1212102, 1217502, 1219302, 1225502, 1247823, 1251202) # perc_50

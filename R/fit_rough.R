@@ -44,19 +44,6 @@ rough_fitting <- function(sitename, df, st, .FUN = wWHIT, lambda = NULL,
     })
 }
 
-#' fill_missdate
-#' fill missing date
-#' @export
-fill_missdate <- function(){
-    years <- 2000:2018
-    doy   <- seq(1, 366, 16)
-    date  <- sprintf("%4d%03d", rep(years, each = 23), doy) %>%
-        parse_date_time("%Y%j") %>% date()
-    if (years[1] == 2000) date <- date[-(1:3)]
-    date  <- date[1:(length(date)-12)] # for 2018
-    date
-}
-
 #' GOF_season3y
 #' GOF of season3y object
 #' @export

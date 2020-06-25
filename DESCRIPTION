@@ -17,9 +17,9 @@ Imports: zoo, data.table, magrittr, purrr,
     gridExtra,
     foreach, iterators, 
     plyr,
-    phenofit, 
     Ipaper
 Suggests: 
+    phenofit, 
     knitr,
     rmarkdown,
     testthat (>= 2.1.0),
