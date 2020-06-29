@@ -21,14 +21,12 @@ check_lambda <- function(lambda){
 
 indir <- "I:/result/"
 ## 1. station info
-st   <- sf::read_sf("data_test/whit_lambda/shp/st_1e3_mask.shp")
+st   <- sf::read_sf("data-raw/whit_lambda/shp/st_1e3_mask.shp")
 coor <- st_geometry(st) %>% do.call(rbind, .) %>% data.table() %>%  set_colnames(c("lon", "lat"))
-
-st <- as.data.table(st)[, 1:3] %>% cbind(coor)
-
+st <- as.data.table(st)[, c(1, 3)] %>% cbind(coor)
 st$site %<>% as.character()
 st$IGBPcode %<>% factor(levels = 1:16, labels = IGBPnames_006[1:16])
-colnames(st)[3] <- "IGBP"
+colnames(st)[2] <- "IGBP"
 
 dirs <- dir("I:/result/whit_lambda/v013", full.names = T) %>%
     set_names(gsub("whit2", "", basename(.)))

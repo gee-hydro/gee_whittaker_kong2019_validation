@@ -13,7 +13,8 @@ optim_lambda(
   IsSave = F,
   file = "test_whit_lambda.pdf",
   wFUN = wBisquare,
-  iters = 2
+  iters = 2,
+  is_normalize = FALSE
 )
 }
 \arguments{
