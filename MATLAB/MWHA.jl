@@ -1,4 +1,3 @@
-function MWHA(yi, xi, x; ylu  = [0, 1], nf = 3, dm = 3, HiLo = -1, thr = 0.1, fet = 0.01)
 #MWHA()
 # 
 # INPUTS
@@ -27,35 +26,50 @@ function MWHA(yi, xi, x; ylu  = [0, 1], nf = 3, dm = 3, HiLo = -1, thr = 0.1, fe
 #   A Moving Weighted Harmonic Analysis Method for Reconstructing High-Quality
 #   SPOT VEGETATION NDVI Time-Series Data. IEEE Trans. Geosci. Remote Sens. 53.
 #   https://doi.org/10.1109/TGRS.2015.2431315
+
+n = 1000
+xi = 1:n
+yi = rand(n)
+# MWHA(yi, xi, xi)
+
+ylu  = [0, 1]
+nf = 3
+dm = 3
+HiLo = -1
+thr = 0.1
+fet = 0.01
+
+# function MWHA(yi, xi, x; ylu  = [0, 1], nf = 3, dm = 3, HiLo = -1, thr = 0.1, fet = 0.01)
+
 low  = ylu[1]
 high = ylu[2]
 
 nnodes=length(xi)
-num_0=find(yi,1)
+# num_0 = findall(yi,1)
 
 HiLo = -HiLo; # keep consistent with HANTS
 
-if isempty(num_0)
-    y_or=zeros(nnodes,1)
-else
+# if isempty(num_0)
+#     y_or=zeros(nnodes,1)
+# else
     p_yi=ones(1,nnodes)
     diff_yi=diff(yi)
     dm2=10
 
     if HiLo .== 1
     # if (strcmp(HiLo,"Hi"))
-        lo_py1=find(diff_yi<=-thr)
+        lo_py1=findall(diff_yi<=-thr)
         lo_py2= diff_yi>=thr
         p_yi[lo_py1+1]=0
         p_yi[lo_py2]=0
     elseif HiLo .== -1 #(strcmp(HiLo,"Lo"))
-        lo_py1=find(diff_yi>=thr)
+        lo_py1=findall(diff_yi>=thr)
         lo_py2= diff_yi<=-thr
         p_yi[lo_py1+1]=0
         p_yi[lo_py2]=0
     end
 
-    lo=find(p_yi==0)
+    lo=findall(p_yi==0)
     x1=x[lo]
 
     ##
@@ -95,9 +109,9 @@ else
         nout=nnodes
         while  (nout>noutmax&&dmi<5*dm2)
             r=abs(di[j,:])/dmi
-            lo1= r>1.0
-            lo2=find(r<=0.5)
-            lo3=find(r>0.5&r<=1)
+            lo1= r .>1.0
+            lo2=findallall(r.<=0.5)
+            lo3=findallall(r.>0.5 .& r.<=1)
 
             wj[lo1]=0
             wj[lo2]=2/3 - 4*r[lo2].^2 + 4*r[lo2].^3
@@ -170,12 +184,12 @@ else
             while  (nout>noutmax&&dmi<5*dm)
                 r=abs(di[j,:])/dmi
                 lo1= r>1.0
-                lo2=find(r<=0.5)
-                lo3=find(r>0.5&r<=1)
+                lo2=findall(r<=0.5)
+                lo3=findall(r>0.5&r<=1)
 
-                wi[lo1]=0
-                wi[lo2]=2/3 - 4*r[lo2].^2 + 4*r[lo2].^3
-                wi[lo3]= 4/3 - 4*r[lo3] + 4*r[lo3].^2 - 4*r[lo3].^3/3
+                wi[lo1] = 0
+                wi[lo2] = 2/3 - 4*r[lo2].^2 + 4*r[lo2].^3
+                wi[lo3] = 4/3 - 4*r[lo3] + 4*r[lo3].^2 - 4*r[lo3].^3/3
 
                 w[j,:]=wi.*p_num
                 nout=sum(w[j,:]==0)
@@ -207,7 +221,7 @@ else
         if HiLo .== 1
             y_err=y_or-Y_mw
             diffVec=p_num'.*y_err
-            lo_diff1=find(diffVec<0)
+            lo_diff1=findall(diffVec<0)
             y_or[lo_diff1]=Y_mw[lo_diff1]
 
             # [~, rankVec] = sort(diffVec,"ascend")
@@ -219,7 +233,7 @@ else
             #        y_err=Y_mw-yi
             #        p_y_err=y_err<0.05
             #        diffVec=p_yi".*p_num".*p_y_err.*y_err
-            #         lo_diff=find(diffVec>0)
+            #         lo_diff=findall(diffVec>0)
             #         y_or=Y_mw
             #         y_or[lo_diff]=yi[lo_diff]
             #
@@ -263,7 +277,7 @@ else
     p_yi3=diff14>=0
 
     p2=p_y_or2.*p_yi2.*p_y_or3.*p_yi3
-    lo_p2=find(p2==1)
+    lo_p2=findall(p2==1)
     w_new=(diff11-diff12)./diff11
     w_or=diff12./diff11
     y_or[lo_p2]=w_new[lo_p2].*y_or[lo_p2]+w_or[lo_p2].*yi2[lo_p2]
@@ -275,7 +289,7 @@ else
     p_y_or1=diff21>=0
     p_yi1=diff22>=0
     p1=p_y_or1.*p_yi1
-    lo_p1=find(p1==1)
+    lo_p1=findall(p1==1)
 
     w_new=(diff21-diff22)./diff21
     w_or=diff22./diff21
@@ -293,14 +307,14 @@ else
     p_yi6=diff32<=0
 
     p3=p_y_or4.*p_yi4.*p_y_or5.*p_yi5
-    lo_p3=find(p3==1)
+    lo_p3=findall(p3==1)
     w_new=(diff31-diff32)./diff31
     w_or=diff32./diff31
     y_or[lo_p3]=w_new[lo_p3].*y_or[lo_p3]+w_or[lo_p3].*yi2[lo_p3]
 
     ## 点跨越上均值两边的情况
     p4=p_y_or1.*p_yi3.*p_yi2
-    lo_p4=find(p4==1)
+    lo_p4=findall(p4==1)
     w_new=diff21./(diff21+diff14)
     w_or=diff14./(diff21+diff14)
     temp=w_new
@@ -310,7 +324,7 @@ else
 
     ## 点跨越均值两边的情况
     p5=p_y_or2.*p_yi4.*p_yi5.*p_y_or4
-    lo_p5=find(p5==1)
+    lo_p5=findall(p5==1)
     w_new=diff11./(diff11+abs(diff12))
     w_or=abs(diff12)./(diff11+abs(diff12))
     temp=w_new
@@ -320,15 +334,14 @@ else
 
     ## 点跨越下均值两边
     p6=p_y_or5.*p_yi6.*p_y_or4
-    lo_p6=find(p6==1)
+    lo_p6=findall(p6==1)
     w_new=diff31./(diff31+abs(diff32))
     w_or=abs(diff32)./(diff31+abs(diff32))
     temp=w_new
     w_new=maximum(w_new,w_or)
     w_or=minimum(temp,w_or)
     y_or[lo_p6]=w_new[lo_p6].*y_or[lo_p6]+w_or[lo_p6].*yi1[lo_p6]
-end
+# end
 
-return y_1, y_2, y_3, y_or
-
-end
+# return y_1, y_2, y_3, y_or
+# end

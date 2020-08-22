@@ -2,16 +2,16 @@ function [y_1,y_2,y_3,y_or]=MWHA(yi, xi, x, ylu, nf, dm, HiLo, thr, fet)
 %MWHA
 %
 % INPUTS
-% xi  : rowvec, ÒÑÓĞ½Úµã×ø±ê
-% x   : rowvec, ´ı²åÖµ£¨ÂË²¨£©µÄ½Úµã×ø±ê
-% nf  : Ğ³²¨¸öÊı£¨Ä¬ÈÏÖµÎª1£©
-% dm  : Ö§³ÖÓò°ë¾¶£¨Ä¬ÈÏÖµÎª100day/2, for SPOT 10-day NDVI is 5, for MODIS 16-day NDVI is 3£©
+% xi  : rowvec, å·²æœ‰èŠ‚ç‚¹åæ ‡
+% x   : rowvec, å¾…æ’å€¼ï¼ˆæ»¤æ³¢ï¼‰çš„èŠ‚ç‚¹åæ ‡
+% nf  : è°æ³¢ä¸ªæ•°ï¼ˆé»˜è®¤å€¼ä¸º1ï¼‰
+% dm  : æ”¯æŒåŸŸåŠå¾„ï¼ˆé»˜è®¤å€¼ä¸º100day/2, for SPOT 10-day NDVI is 5, for MODIS 16-day NDVI is 3ï¼‰
 % HiLo: indicating rejection of -1: low, 1: high outliers. 
-% thr : ÅĞ¶ÏµÍÖµµãµÄãĞÖµ(NDVIÉèÎª0.1)
-% fet : ÄâºÏÎó²î(0.01)
-% high: Êı¾İÖµÓò×î¸ßÖµ(NDVI=1£©
-% low : Êı¾İÖµÓò×îµÍÖµ(NDVI=-1)
-% yi  : colvec, µ¥ÏñËØÊ±¼äĞòÁĞ£¨ÁĞÏòÁ¿£©
+% thr : åˆ¤æ–­ä½å€¼ç‚¹çš„é˜ˆå€¼(NDVIè®¾ä¸º0.1)
+% fet : æ‹Ÿåˆè¯¯å·®(0.01)
+% high: æ•°æ®å€¼åŸŸæœ€é«˜å€¼(NDVI=1ï¼‰
+% low : æ•°æ®å€¼åŸŸæœ€ä½å€¼(NDVI=-1)
+% yi  : colvec, å•åƒç´ æ—¶é—´åºåˆ—ï¼ˆåˆ—å‘é‡ï¼‰
 %
 % OUTPUTS
 % y_1:  iteration 1
@@ -240,7 +240,7 @@ else
     y_3=y_or;
     % % ;
     
-    %% ¼ÆËãÈı¸ö¾ùÖµ
+    %% è®¡ç®—ä¸‰ä¸ªå‡å€¼
     yi1=y_1;
     % yi2=(y_2+yi)/2;
     yi2=yi;
@@ -248,81 +248,80 @@ else
     mat_mean2=ones(nnodes,1)*mean(yi(yi>mean(yi)));
     mat_mean3=ones(nnodes,1)*mean(yi(yi<mean(yi)));
     
-    %% µãÍ¬Ê±Î»ÓÚ¾ùÖµºÍÉÏ¾ùÖµÖ®¼äµÄÇé¿ö
+    %% ç‚¹åŒæ—¶ä½äºå‡å€¼å’Œä¸Šå‡å€¼ä¹‹é—´çš„æƒ…å†µ
+    diff11  = y_or-mat_mean1;
+    diff12  = yi-mat_mean1;
+    diff13  = mat_mean2-y_or;
+    diff14  = mat_mean2-yi;
     
-    diff11=y_or-mat_mean1;
-    diff12=yi-mat_mean1;
-    diff13=mat_mean2-y_or;
-    diff14=mat_mean2-yi;
+    p_y_or2 = diff11>=0;
+    p_yi2   = diff12>=0;
+    p_y_or3 = diff13>=0;
+    p_yi3   = diff14>=0;
     
-    p_y_or2=diff11>=0;
-    p_yi2=diff12>=0;
-    p_y_or3=diff13>=0;
-    p_yi3=diff14>=0;
+    p2          = p_y_or2.*p_yi2.*p_y_or3.*p_yi3;
+    lo_p2       = find(p2==1);
+    w_new       = (diff11-diff12)./diff11;
+    w_or        = diff12./diff11;
+    y_or(lo_p2) = w_new(lo_p2).*y_or(lo_p2)+w_or(lo_p2).*yi2(lo_p2);
     
-    p2=p_y_or2.*p_yi2.*p_y_or3.*p_yi3;
-    lo_p2=find(p2==1);
-    w_new=(diff11-diff12)./diff11;
-    w_or=diff12./diff11;
-    y_or(lo_p2)=w_new(lo_p2).*y_or(lo_p2)+w_or(lo_p2).*yi2(lo_p2);
+    %% ç‚¹åŒæ—¶ä½äºä¸Šå‡å€¼ä»¥ä¸Šçš„æƒ…å†µ
+    diff21  = y_or-mat_mean2;
+    diff22  = yi-mat_mean2;
     
-    %% µãÍ¬Ê±Î»ÓÚÉÏ¾ùÖµÒÔÉÏµÄÇé¿ö
-    diff21=y_or-mat_mean2;
-    diff22=yi-mat_mean2;
+    p_y_or1 = diff21>=0;
+    p_yi1   = diff22>=0;
+    p1      = p_y_or1.*p_yi1;
+    lo_p1   = find(p1==1);
     
-    p_y_or1=diff21>=0;
-    p_yi1=diff22>=0;
-    p1=p_y_or1.*p_yi1;
-    lo_p1=find(p1==1);
+    w_new       = (diff21-diff22)./diff21;
+    w_or        = diff22./diff21;
     
-    w_new=(diff21-diff22)./diff21;
-    w_or=diff22./diff21;
+    y_or(lo_p1) = w_new(lo_p1).*y_or(lo_p1)+w_or(lo_p1).*yi2(lo_p1);
     
-    y_or(lo_p1)=w_new(lo_p1).*y_or(lo_p1)+w_or(lo_p1).*yi2(lo_p1);
+    %% ç‚¹åŒæ—¶ä½äºå‡å€¼å’Œä¸‹å‡å€¼ä¹‹é—´çš„æƒ…å†µ
+    diff31  = y_or-mat_mean3;
+    diff32  = yi-mat_mean3;
     
-    %% µãÍ¬Ê±Î»ÓÚ¾ùÖµºÍÏÂ¾ùÖµÖ®¼äµÄÇé¿ö
-    diff31=y_or-mat_mean3;
-    diff32=yi-mat_mean3;
+    p_y_or4 = diff11<=0;
+    p_yi4   = diff12<=0;
+    p_y_or5 = diff31>=0;
+    p_yi5   = diff32>=0;
+    p_yi6   = diff32<=0;
     
-    p_y_or4=diff11<=0;
-    p_yi4=diff12<=0;
-    p_y_or5=diff31>=0;
-    p_yi5=diff32>=0;
-    p_yi6=diff32<=0;
+    p3          = p_y_or4.*p_yi4.*p_y_or5.*p_yi5;
+    lo_p3       = find(p3==1);
+    w_new       = (diff31-diff32)./diff31;
+    w_or        = diff32./diff31;
+    y_or(lo_p3) = w_new(lo_p3).*y_or(lo_p3)+w_or(lo_p3).*yi2(lo_p3);
     
-    p3=p_y_or4.*p_yi4.*p_y_or5.*p_yi5;
-    lo_p3=find(p3==1);
-    w_new=(diff31-diff32)./diff31;
-    w_or=diff32./diff31;
-    y_or(lo_p3)=w_new(lo_p3).*y_or(lo_p3)+w_or(lo_p3).*yi2(lo_p3);
+    %% ç‚¹è·¨è¶Šä¸Šå‡å€¼ä¸¤è¾¹çš„æƒ…å†µ
+    p4          = p_y_or1.*p_yi3.*p_yi2;
+    lo_p4       = find(p4==1);
+    w_new       = diff21./(diff21+diff14);
+    w_or        = diff14./(diff21+diff14);
+    temp        = w_new;
+    w_new       = max(w_new,w_or);
+    w_or        = min(temp,w_or);
+    y_or(lo_p4) = w_new(lo_p4).*y_or(lo_p4)+w_or(lo_p4).*yi1(lo_p4);
     
-    %% µã¿çÔ½ÉÏ¾ùÖµÁ½±ßµÄÇé¿ö
-    p4=p_y_or1.*p_yi3.*p_yi2;
-    lo_p4=find(p4==1);
-    w_new=diff21./(diff21+diff14);
-    w_or=diff14./(diff21+diff14);
-    temp=w_new;
-    w_new=max(w_new,w_or);
-    w_or=min(temp,w_or);
-    y_or(lo_p4)=w_new(lo_p4).*y_or(lo_p4)+w_or(lo_p4).*yi1(lo_p4);
-    
-    %% µã¿çÔ½¾ùÖµÁ½±ßµÄÇé¿ö
+    %% ç‚¹è·¨è¶Šå‡å€¼ä¸¤è¾¹çš„æƒ…å†µ
     p5=p_y_or2.*p_yi4.*p_yi5.*p_y_or4;
-    lo_p5=find(p5==1);
-    w_new=diff11./(diff11+abs(diff12));
-    w_or=abs(diff12)./(diff11+abs(diff12));
-    temp=w_new;
-    w_new=max(w_new,w_or);
-    w_or=min(temp,w_or);
-    y_or(lo_p5)=w_new(lo_p5).*y_or(lo_p5)+w_or(lo_p5).*yi1(lo_p5);
+    lo_p5       = find(p5==1);
+    w_new       = diff11./(diff11+abs(diff12));
+    w_or        = abs(diff12)./(diff11+abs(diff12));
+    temp        = w_new;
+    w_new       = max(w_new,w_or);
+    w_or        = min(temp,w_or);
+    y_or(lo_p5) = w_new(lo_p5).*y_or(lo_p5)+w_or(lo_p5).*yi1(lo_p5);
     
-    %% µã¿çÔ½ÏÂ¾ùÖµÁ½±ß
-    p6=p_y_or5.*p_yi6.*p_y_or4;
-    lo_p6=find(p6==1);
-    w_new=diff31./(diff31+abs(diff32));
-    w_or=abs(diff32)./(diff31+abs(diff32));
-    temp=w_new;
-    w_new=max(w_new,w_or);
-    w_or=min(temp,w_or);
-    y_or(lo_p6)=w_new(lo_p6).*y_or(lo_p6)+w_or(lo_p6).*yi1(lo_p6);
+    %% ç‚¹è·¨è¶Šä¸‹å‡å€¼ä¸¤è¾¹
+    p6          = p_y_or5.*p_yi6.*p_y_or4;
+    lo_p6       = find(p6==1);
+    w_new       = diff31./(diff31+abs(diff32));
+    w_or        = abs(diff32)./(diff31+abs(diff32));
+    temp        = w_new;
+    w_new       = max(w_new,w_or);
+    w_or        = min(temp,w_or);
+    y_or(lo_p6) = w_new(lo_p6).*y_or(lo_p6)+w_or(lo_p6).*yi1(lo_p6);
 end

@@ -35,7 +35,6 @@ ggplot(gof, aes(chunksize, R2, color = type)) +
     geom_boxplot2()
 
 InitCluster(8, kill = FALSE)
-
 lst_full = foreach(l = lst, i = icount()) %dopar% {
     runningId(i)
     d = map(l, ~ .x$coef) %>%
