@@ -62,7 +62,7 @@ a[p.value < 0.05]
 ################################################################################
 # fit <- aov(estimate~IGBP, info[term == 'mean']) %T>% summary()
 
-# dt[, .(lambda2 = init_lambda(y)), .(site, grp)]
+# dt[, .(lambda2 = lambda_init(y)), .(site, grp)]
 # ## 02. visualization
 # xs <- melt(x, c("site", "IGBP", "lambda"))
 # ggplot(xs, aes(value, lambda)) + geom_point(alpha = 0.05) + geom_smooth() +

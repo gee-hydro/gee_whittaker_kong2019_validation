@@ -28,7 +28,7 @@ rough_fitting <- function(sitename, df, st, .FUN = wWHIT, lambda = NULL,
         INPUT$y0 <- dnew$y
 
         ## 20180819 fixed lambda bug, lambda will overwrite new lambda in season_mov
-        # if (is.null(lambda)) lambda <- init_lambda(INPUT$y)#*2w
+        # if (is.null(lambda)) lambda <- lambda_init(INPUT$y)#*2w
         brks2 <- season_mov(INPUT,
                            rFUN = .FUN,
                            lambda = lambda, nf = nf, frame = frame,

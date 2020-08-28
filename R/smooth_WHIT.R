@@ -15,7 +15,7 @@ smooth_WHIT <- function(y, w, lambda, iters = 3,
 
     if (missing(lambda) || is.na(lambda)){
         # if missing, init according to v-curve
-        lambda <- init_lambda(l$y)
+        lambda <- lambda_init(l$y)
     }
 
     r <- wWHIT(l$y, l$w, l$ylu, nptperyear, wFUN = wBisquare,
@@ -36,7 +36,7 @@ smooth_WHIT_df <- function(d, lambda, iters = 3, IsPlot = FALSE, ...)
 
     if (missing(lambda) || is.null(lambda)){
         # if missing, init according to v-curve
-        lambda <- init_lambda(l$y)
+        lambda <- lambda_init(l$y)
     }
 
     r <- wWHIT(l$y, l$w, l$ylu, nptperyear, wFUN = wBisquare,

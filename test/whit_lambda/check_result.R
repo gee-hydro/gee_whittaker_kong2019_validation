@@ -11,15 +11,15 @@ lst_good <- lst[-I]
 
 a <- lst[I]
 
-res <- optim_lambda_FUN(I[1])
+res <- lambda_optim_FUN(I[1])
 res <- par_sbatch(as.numeric(names(I))[51:100],
-                  optim_lambda_FUN, wFUN = wSELF,
+                  lambda_optim_FUN, wFUN = wSELF,
                   Save = F, return.res = T,
                   outdir = paste0("result/whit_lambda/wSELF", subfix))
 
 sapply(res, length) %>% {which(. == 1)} %>% as.numeric() %>%
     sort() #%T>% print
 
-res <- par_sbatch(sites[134], optim_lambda_FUN, wFUN = wSELF,
+res <- par_sbatch(sites[134], lambda_optim_FUN, wFUN = wSELF,
                   Save = F, return.res = T,
                   outdir = paste0("result/whit_lambda/wSELF", subfix))

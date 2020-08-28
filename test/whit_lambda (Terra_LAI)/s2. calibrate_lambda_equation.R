@@ -1,7 +1,12 @@
 # !/usr/bin/Rscript
-# Dongdong Kong ----------------------------------------------------------------
+# 本程序用于：
+# 1. 读取MODIS Terra-LAI在16000测试点上的数据，测试optimal lambda公式
+# 2. 随后调用`s2_calibrate_lambda_equation`获得optimal lambda公式
+# @author
+# Dongdong Kong, 2020-08-29
 source('test/main_pkgs.R')
 
+library(sf)
 # setwd("/media/kong/Various Data/Research/GEE_repos/gee_whittaker/")
 # print(getwd())
 {

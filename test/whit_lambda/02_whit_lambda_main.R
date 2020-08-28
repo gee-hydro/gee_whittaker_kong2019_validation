@@ -85,8 +85,8 @@ pars <- expand.grid(deltaT = deltaTs, is_extend = is_extends)
 # i <- 1:nrow(pars) %>% set_names(pars$deltaT, )
 
 # set extent = false, it will not enclude previous and subsequent year' data.
-optim_lambda_FUN <- function(sitename, wFUN = wSELF, deltaT = 1, extend){
-    optim_lambda(sitename, df = df_org, deltaT, extend,
+lambda_optim_FUN <- function(sitename, wFUN = wSELF, deltaT = 1, extend){
+    lambda_optim(sitename, df = df_org, deltaT, extend,
                  IsPlot = F, IsSave = F, file = "whit_formual_wBisquare.pdf",
                  wFUN = wFUN)
 }
@@ -100,21 +100,21 @@ for (i in 1:6){ # length(deltaTs)
         subfix <- sprintf("grp%02d_%s", deltaTs[i], extend_str)
         print(subfix)
 
-        # optim_lambda_FUN(sitename)
-        res <- par_sbatch(sites, optim_lambda_FUN, wFUN = wTSM, deltaT, is_extend,
+        # lambda_optim_FUN(sitename)
+        res <- par_sbatch(sites, lambda_optim_FUN, wFUN = wTSM, deltaT, is_extend,
                           return.res = T, Save = T,
                           outdir = paste0("result/whit_lambda/v013/whit2", subfix))
     }
 }
 
-# a <- optim_lambda_FUN(sitename)
-# res <- optim_lambda_FUN(102)
+# a <- lambda_optim_FUN(sitename)
+# res <- lambda_optim_FUN(102)
 # deltaT <- 1 # current is 4 at GEE
-# res.bisquare <- optim_lambda(sitename, df, deltaT = 1, extent = T, IsPlot = F, IsSave = F,
+# res.bisquare <- lambda_optim(sitename, df, deltaT = 1, extent = T, IsPlot = F, IsSave = F,
 #                     wFUN = wBisquare, file = "whit_formual_wBisquare.pdf")
-# res.TSM <- optim_lambda(sitename, df, deltaT = 1, extent = T, IsPlot = F, IsSave = T,
+# res.TSM <- lambda_optim(sitename, df, deltaT = 1, extent = T, IsPlot = F, IsSave = T,
 #                     wFUN = wTSM, file = "whit_formual_wTSM.pdf")
-# res.self <- optim_lambda(sitename, df, deltaT = 1, extent = T, IsPlot = F, IsSave = T,
+# res.self <- lambda_optim(sitename, df, deltaT = 1, extent = T, IsPlot = F, IsSave = T,
 #                     wFUN = wSELF, file = "whit_formual_wSELF.pdf")
 
 # group = F # three year group
@@ -122,18 +122,18 @@ for (i in 1:6){ # length(deltaTs)
 # outdir <- paste0("result", outdir)
 
 # cpus_per_node <- as.numeric(Sys.getenv('SLURM_CPUS_ON_NODE'))
-#par_sbatch(sites, optim_lambda_FUN, wFUN = wBisquare, Save = T,
+#par_sbatch(sites, lambda_optim_FUN, wFUN = wBisquare, Save = T,
  #          outdir = paste0("result/whit_lambda/wBisquare", subfix) )
-# par_sbatch(sites, optim_lambda_FUN, wFUN = wTSM, Save = T,
+# par_sbatch(sites, lambda_optim_FUN, wFUN = wTSM, Save = T,
 #            outdir = paste0("result/whit_lambda/wTSM", subfix) )
 
-# res <- par_sbatch(sites, optim_lambda_FUN, wFUN = wBisquare,
+# res <- par_sbatch(sites, lambda_optim_FUN, wFUN = wBisquare,
 #                   return.res = F, Save = T,
 #             outdir = paste0("result/whit_lambda/wBisquare", subfix))
-# res <- par_sbatch(sites, optim_lambda_FUN, wFUN = wTSM,
+# res <- par_sbatch(sites, lambda_optim_FUN, wFUN = wTSM,
 #                   return.res = F, Save = T,
 #             outdir = paste0("result/whit_lambda/wTSM", subfix))
-# res <- par_sbatch(sites, optim_lambda_FUN, wFUN = wSELF,
+# res <- par_sbatch(sites, lambda_optim_FUN, wFUN = wSELF,
 #                   return.res = F, Save = T,
 #             outdir = paste0("result/whit_lambda/wSELF", subfix))
 
@@ -145,8 +145,8 @@ for (i in 1:6){ # length(deltaTs)
 # res <- list()
 # for (i in seq_along(sites)[101:1000]){
 #     sitename <- sites[i]
-#     res[[i]] <- optim_lambda_FUN(sitename, wSELF)
+#     res[[i]] <- lambda_optim_FUN(sitename, wSELF)
 # }
-# system.time({ res <- pbmclapply(sites, optim_lambda, df = df, mc.cores = cpus_per_node) })
+# system.time({ res <- pbmclapply(sites, lambda_optim, df = df, mc.cores = cpus_per_node) })
 
 # x$`system:index` %<>% str_sub( 1, 31)

@@ -1,7 +1,7 @@
 
-optim_lambda_FUN <- function(sitename, wFUN = wSELF, deltaT = 1, extend = FALSE, 
+lambda_optim_FUN <- function(sitename, wFUN = wSELF, deltaT = 1, extend = FALSE, 
     IsPlot = FALSE, is_normalize = FALSE){
-    optim_lambda(sitename, df = df_org, deltaT, extend,
+    lambda_optim(sitename, df = df_org, deltaT, extend,
                  IsPlot = IsPlot, IsSave = F, file = "whit_formual_wBisquare.pdf",
                  wFUN = wFUN, is_normalize = is_normalize)
 }
@@ -13,7 +13,7 @@ optim_lambda_FUN <- function(sitename, wFUN = wSELF, deltaT = 1, extend = FALSE,
 #'
 #' @param deltaT int, nyears chunk
 #' @export
-optim_lambda <- function(sitename, df, deltaT, extend = T,
+lambda_optim <- function(sitename, df, deltaT, extend = T,
     IsPlot = F, IsSave = F, file = "test_whit_lambda.pdf",
     wFUN = wBisquare, iters = 2, is_normalize = FALSE){
     # sitename <- sites[i]#; grp = 1
@@ -58,8 +58,9 @@ optim_lambda <- function(sitename, df, deltaT, extend = T,
         res[[i]] <- tryCatch({
             if (IsPlot) par(mfrow = c(2, 1), mar = c(2.5, 2.5, 1, 0.2),
                 mgp = c(1.3, 0.6, 0), oma = c(0, 0, 0.5, 0))
-
-            vc <- v_curve(INPUT_i, lg_lambdas = seq(-1, 3, by = 0.01), d = 2,
+            
+            # lambda_vcurve theory used here
+            vc <- lambda_vcurve(INPUT_i, lg_lambdas = seq(-1, 3, by = 0.01), d = 2,
                           wFUN = wFUN, iters = iters,
                 IsPlot = IsPlot)
 

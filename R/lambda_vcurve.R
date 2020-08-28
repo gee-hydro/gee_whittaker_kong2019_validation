@@ -1,4 +1,4 @@
-v_curve <- function (INPUT, lg_lambdas, d = 2, IsPlot = FALSE, wFUN = wTSM, 
+lambda_vcurve <- function (INPUT, lg_lambdas, d = 2, IsPlot = FALSE, wFUN = wTSM, 
     iters = 2) 
 {
     y <- INPUT$y
