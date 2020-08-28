@@ -1,12 +1,7 @@
 # !/usr/bin/Rscript
-# 本程序用于：
-# 1. 读取MODIS Terra-LAI在16000测试点上的数据，测试optimal lambda公式
-# 2. 随后调用`s2_calibrate_lambda_equation`获得optimal lambda公式
-# @author
-# Dongdong Kong, 2020-08-29
 source('test/main_pkgs.R')
-
 library(sf)
+library(broom)
 # setwd("/media/kong/Various Data/Research/GEE_repos/gee_whittaker/")
 # print(getwd())
 {
@@ -39,15 +34,15 @@ gof[, `:=`(type = str_extract(id_str, ".*(?=_\\d)"),
 ggplot(gof, aes(chunksize, R2, color = type)) +
     geom_boxplot2()
 
-InitCluster(8, kill = FALSE)
-lst_full = foreach(l = lst, i = icount()) %dopar% {
+# InitCluster(8, kill = FALSE)
+lst_full = foreach(l = lst, i = icount()) %do% {
     runningId(i)
     d = map(l, ~ .x$coef) %>%
         melt_list("site") %>%
         data.table()
 }
 #  melt_list("id_str")
-st <- read_sf("data-raw/whit_lambda/shp/st_1e3_mask.shp") %>% data.table() %>% .[, -c(2, 4)]
+# st <- read_sf("data-raw/whit_lambda/shp/st_1e3_mask.shp") %>% data.table() %>% .[, -c(2, 4)]
 
 # 结果显示前后扩展一年非常有必要 -----------------------------------------------
 # 无扩展时R2 = 0.0905, 扩展时R2 = 0.167
@@ -60,6 +55,7 @@ df = foreach(d = lst_full,
              nyear = nyears,
              is_extend = rep(c(1, 0), ngrp),
              kind = rep(c("normalized", "original"), each = 12)) %do% {
+    # d$site %<>% as.numeric()
     cbind(d, nyear, is_extend, kind)
     # lm(lambda ~ mean + sd + kurtosis +skewness, d) %>% glance()
 } %>% do.call(rbind, .) %>% merge(st)
@@ -69,7 +65,7 @@ df = foreach(d = lst_full,
 {
     par(mfrow = c(1, 2))
     IGBPs_bad = c("EBF", "CNV", "URB")#[1]
-    d = df[kind == c("normalized", "original")[2] & is_extend == 1 & nyear == 2]
+    d = df[kind == c("normalized", "original")[2] & is_extend == 0 & nyear == 4]
     d[, lambda2 := mark_outlier(lambda), .(site, nyear, is_extend, kind)]
     # d[lambda < 1, lambda := 1]
     l <- lm(log10(lambda2) ~ mean + sd + skewness + kurtosis, d[!(IGBP %in% IGBPs_bad), ]) %T>% {print(glance(.))}
@@ -86,6 +82,8 @@ df = foreach(d = lst_full,
 # r.squared adj.r.squared sigma statistic p.value    df   logLik     AIC     BIC deviance df.residual
 # <dbl>         <dbl> <dbl>     <dbl>   <dbl> <int>    <dbl>   <dbl>   <dbl>    <dbl>       <int>
 #     1     0.500         0.500 0.596    27944.       0     5 -100956. 201924. 201982.   39796.      111944
+
+# 以此编写GEE版本的函数
 # >     l$coefficients
 # (Intercept)        mean          sd    skewness    kurtosis
 # 1.77365505  0.43062881 -0.34192178 -0.30107590  0.03221195
@@ -109,24 +107,23 @@ df = foreach(d = lst_full,
 r[order(adj.r.squared)]
 
 
-m = aov(lambda ~ factor(nyear), df[is_extend == 1, ])
-TukeyHSD(m)
+# m = aov(lambda ~ factor(nyear), df[is_extend == 1, ])
+# TukeyHSD(m)
 
-lm(lambda ~ mean + sd + kurtosis + skewness + nyear, df[is_extend == 0]) %>% glance()
-lm(lambda ~ mean + sd + kurtosis + skewness + nyear, df[is_extend == 1]) %>% glance()
+# lm(lambda ~ mean + sd + kurtosis + skewness + nyear, df[is_extend == 0]) %>% glance()
+# lm(lambda ~ mean + sd + kurtosis + skewness + nyear, df[is_extend == 1]) %>% glance()
 
-# 是否考虑年影响不大
-lm(lambda ~ mean + sd + kurtosis + skewness, df[is_extend == 0]) %>% glance()
-lm(lambda ~ mean + sd + kurtosis + skewness, df[is_extend == 1]) %>% glance()
+# # 是否考虑年影响不大
+# lm(lambda ~ mean + sd + kurtosis + skewness, df[is_extend == 0]) %>% glance()
+# lm(lambda ~ mean + sd + kurtosis + skewness, df[is_extend == 1]) %>% glance()
 
-{
-    l <- lm(lambda ~ mean + sd + kurtosis +skewness, df[kind == c("normalized", "original")[1] & is_extend == 1])
-    info = data.table(ypred = l$fitted.values, yobs = l$model$lambda)
+# {
+#     l <- lm(lambda ~ mean + sd + kurtosis +skewness, df[kind == c("normalized", "original")[1] & is_extend == 1])
+#     info = data.table(ypred = l$fitted.values, yobs = l$model$lambda)
 
-}
+# }
 
-
-info = foreach(d = res, i = icount()) %do% {
-    lm(lambda ~ mean + sd + kurtosis +skewness, d) %>% glance()
-} %>% melt_list("id_str")
+# info = foreach(d = res, i = icount()) %do% {
+#     lm(lambda ~ mean + sd + kurtosis +skewness, d) %>% glance()
+# } %>% melt_list("id_str")
 

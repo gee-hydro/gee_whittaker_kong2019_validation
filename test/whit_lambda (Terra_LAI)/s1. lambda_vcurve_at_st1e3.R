@@ -1,4 +1,10 @@
 #! Rscript
+# 本程序用于：
+# 1. 读取MODIS Terra-LAI在16000测试点上的数据，测试optimal lambda公式
+# 2. 随后调用`s2_calibrate_lambda_equation`获得optimal lambda公式
+# @author
+# Dongdong Kong, 2020-08-29
+
 # setwd("/media/kong/Various Data/Research/GEE_repos/gee_whittaker/")
 library(phenofit)
 devtools::load_all()
