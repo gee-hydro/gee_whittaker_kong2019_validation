@@ -8,3 +8,4 @@
 ^LICENSE\.md$
 ^appveyor\.yml$
 ^data-raw$
+^\.covrignore$

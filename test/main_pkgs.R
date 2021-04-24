@@ -14,7 +14,7 @@ suppressMessages({
 
     library(Ipaper)
     # library(phenofit)
-    library(whittaker)
+    # library(whittaker)
 })
 
 # install_github('kongdd/ggplot2')
@@ -24,12 +24,10 @@ suppressMessages({
 # source("R/main_phenofit_test.R")
 # source("test/stable/ggplot/geom_boxplot_no_outlier.R")
 # source('R/plot_phenofit.R')
-
 dir_whiteval <- "data_test/whit_eval"
 
 file_noise_random   <- sprintf("%s/noise3_random.rda", dir_whiteval)
 file_noise_keypoint <- sprintf("%s/noise3_keypoint.rda", dir_whiteval) # and real gap
-
 
 {
     theme_kong <- theme_grey(base_size = 14) +

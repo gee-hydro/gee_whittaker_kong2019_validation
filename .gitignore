@@ -23,6 +23,7 @@ Figures/
 
 # RESULT
 RESULT/
+temp/
 
 # data
 *.csv
