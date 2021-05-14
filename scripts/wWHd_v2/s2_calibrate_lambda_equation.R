@@ -1,14 +1,14 @@
 # !/usr/bin/Rscript
-source('test/main_pkgs.R')
+source('scripts/main_pkgs.R')
 library(sf)
 library(broom)
 # setwd("/media/kong/Various Data/Research/GEE_repos/gee_whittaker/")
 # print(getwd())
 {
     ## 1. station info
-    st   <- sf::read_sf("data-raw/whit_lambda/shp/st_1e3_mask.shp")
-    coor <- st_geometry(st) %>% do.call(rbind, .) %>% data.table() %>%  set_colnames(c("lon", "lat"))
-    st <- as.data.table(st)[, c(1, 3)] %>% cbind(coor)
+    st   <- sf::read_sf("data-raw/shp/st_1e3_mask.shp")
+    # coor <- st_geometry(st) %>% do.call(rbind, .) %>% data.table() %>%  set_colnames(c("lon", "lat"))
+    st <- as.data.table(st) %>% select(-4) %>% data.table()
     st$site %<>% as.character()
     st$IGBP <- factor(st$IGBPcode, levels = IGBPcodes_006, labels = IGBPnames_006)
     # colnames(st)[2] <- "IGBP"
@@ -38,11 +38,8 @@ ggplot(gof, aes(chunksize, R2, color = type)) +
 lst_full = foreach(l = lst, i = icount()) %do% {
     runningId(i)
     d = map(l, ~ .x$coef) %>%
-        melt_list("site") %>%
-        data.table()
+        melt_list("site")
 }
-#  melt_list("id_str")
-# st <- read_sf("data-raw/whit_lambda/shp/st_1e3_mask.shp") %>% data.table() %>% .[, -c(2, 4)]
 
 # 结果显示前后扩展一年非常有必要 -----------------------------------------------
 # 无扩展时R2 = 0.0905, 扩展时R2 = 0.167
@@ -78,15 +75,15 @@ df = foreach(d = lst_full,
     with(d[IGBP %in% IGBPs_bad[1]], xyplot(log10(lambda), ypred))
 }
 
-# # A tibble: 1 x 11
-# r.squared adj.r.squared sigma statistic p.value    df   logLik     AIC     BIC deviance df.residual
-# <dbl>         <dbl> <dbl>     <dbl>   <dbl> <int>    <dbl>   <dbl>   <dbl>    <dbl>       <int>
-#     1     0.500         0.500 0.596    27944.       0     5 -100956. 201924. 201982.   39796.      111944
+# #A tibble: 1 x 12
+# r.squared adj.r.squared sigma statistic p.value    df  logLik     AIC     BIC deviance
+# <dbl>         <dbl> <dbl>     <dbl>   <dbl> <dbl>   <dbl>   <dbl>   <dbl>    <dbl>
+#     1     0.501         0.501 0.597    14046.       0     4 -50530. 101072. 101126.   19935.
+# # ... with 2 more variables: df.residual <int>, nobs <int>
 
-# 以此编写GEE版本的函数
-# >     l$coefficients
+# > l$coefficients
 # (Intercept)        mean          sd    skewness    kurtosis
-# 1.77365505  0.43062881 -0.34192178 -0.30107590  0.03221195
+# 1.75013617  0.43290412 -0.34849117 -0.26693727  0.02738267
 
 {
     r <- NULL
@@ -105,7 +102,6 @@ df = foreach(d = lst_full,
     # l$coefficients
 }
 r[order(adj.r.squared)]
-
 
 # m = aov(lambda ~ factor(nyear), df[is_extend == 1, ])
 # TukeyHSD(m)

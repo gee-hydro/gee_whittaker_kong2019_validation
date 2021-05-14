@@ -1,8 +1,8 @@
-# source("test/main_pkgs.R")
+# source("scripts/main_pkgs.R")
 suppressMessages({
     library(tidyverse)
     library(data.table)
-    library(plyr)
+    library(dplyr)
     library(magrittr)
     library(maptools)
 
@@ -17,10 +17,6 @@ suppressMessages({
     # library(whittaker)
 })
 
-# install_github('kongdd/ggplot2')
-# install_github('kongdd/plyr')
-# source("test/load_pkgs.R")
-# source('G:/Github/phenology/phenology/phenofit/test/load_pkgs.R')
 # source("R/main_phenofit_test.R")
 # source("test/stable/ggplot/geom_boxplot_no_outlier.R")
 # source('R/plot_phenofit.R')

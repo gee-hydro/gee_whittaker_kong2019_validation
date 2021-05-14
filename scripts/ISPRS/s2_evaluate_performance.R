@@ -2,7 +2,7 @@
 # Dongdong Kong (2019-03-03)
 #
 # Input data was prepared by:
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 
 ## MAIN SCRIPTS ----------------------------------------------------------------
 load(sprintf('%s/noise3_random.rda', dir_whiteval))

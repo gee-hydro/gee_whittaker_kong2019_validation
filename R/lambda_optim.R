@@ -65,7 +65,6 @@ lambda_optim <- function(sitename, df, deltaT, extend = T,
                 IsPlot = IsPlot)
 
             ind <- match(I, I_ext)
-            # browser()
             # vc$fit <- vc$fit[ind, ]
             vc$fit <- cbind(vc$fit, y = INPUT_i$y0)[ind, ]
 

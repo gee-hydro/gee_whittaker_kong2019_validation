@@ -1,4 +1,4 @@
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 
 qc_values <- c("0", "1", "2", "3")
 qc_levels <- c("good", "margin", "snow/ice", "cloud")

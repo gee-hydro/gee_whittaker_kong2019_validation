@@ -2,7 +2,7 @@
 # Dongdong Kong (2019-03-03)
 #
 # 'test/07_whit/whit_lambda/02_whit_lambda_main.R'
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 
 # time of reference curve
 t          <- seq(1, 366, 16)

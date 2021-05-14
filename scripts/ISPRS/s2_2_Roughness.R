@@ -1,5 +1,5 @@
 # Dongdong Kong (2019-03-06)
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 
 # HANTS -------------------------------------------------------------------
 files <- dir(dir_whiteval, pattern = "*.csv$", full.names = T, recursive = T)

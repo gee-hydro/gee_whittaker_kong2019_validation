@@ -1,4 +1,4 @@
-# source("test/main_pkgs.R")
+# source("scripts/main_pkgs.R")
 library(sf)
 library(rgee)
 library(rgee2)

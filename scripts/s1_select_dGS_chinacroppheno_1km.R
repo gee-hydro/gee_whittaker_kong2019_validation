@@ -1,4 +1,4 @@
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 
 indir = "/mnt/i/Research/gee_Whittaker version2/ChinaCropPhen1km/"
 files = dir(indir, "*.tif", full.names = TRUE)

@@ -11,7 +11,7 @@ library(rgdal)
 devtools::load_all()
 # args <- commandArgs(TRUE)
 # print(args)
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 # nptperyear <- 23
 
 # file_poly = "~/ArcGIS/huabei.shp"
@@ -36,10 +36,6 @@ write_fig({
 }, "Figs1_Distribution of NorthChina&GuangDong tested points (sp111).pdf", 5, 5)
 
 ## retrieve MOD13A2 data from GEE
-
-
-
-
 
 ## 1. tidy GEE exported data ---------------------------------------------------
 # file ="data_test/whit_lambda/MOD13A1_st_1e3_20180725.rda"

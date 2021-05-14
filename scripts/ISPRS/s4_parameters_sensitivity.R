@@ -1,4 +1,4 @@
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 # data("mat_ref")
 # data('lst_noise')
 

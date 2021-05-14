@@ -1,5 +1,5 @@
 # Dongdong Kong (2019-03-06)
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 
 types <- c("maxDer", "maxK", "real")
 add_types <- function(d){

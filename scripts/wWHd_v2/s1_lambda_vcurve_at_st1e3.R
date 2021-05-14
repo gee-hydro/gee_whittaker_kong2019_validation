@@ -4,13 +4,11 @@
 # 2. 随后调用`s2_calibrate_lambda_equation`获得optimal lambda公式
 # @author
 # Dongdong Kong, 2020-08-29
-
-# setwd("/media/kong/Various Data/Research/GEE_repos/gee_whittaker/")
 library(phenofit)
 devtools::load_all()
 # args <- commandArgs(TRUE)
 # print(args)
-source("test/main_pkgs.R")
+source("scripts/main_pkgs.R")
 nptperyear <- 23
 
 ## 1. tidy GEE exported data ---------------------------------------------------
@@ -21,7 +19,7 @@ if (!file.exists(file)) {
     # 原始数据较大，读取之后，放在了如下压缩文件中：
     # "data-raw/whit_lambda/raw-csv-v20200608/raw-csv-v20200608.zip"
     indir <- "data-raw/whit_lambda/raw-csv-v20200608/combined_LAI/"
-    files <- dir(indir, "EVI.*.csv", full.names = T)
+    # files <- dir(indir, "EVI.*.csv", full.names = T)
     files <- dir(indir, "LAI.*.csv", full.names = T)
 
     lst <- llply(files, fread, nrows = 5, .progress = "text")
@@ -137,7 +135,6 @@ temp = foreach(deltaT = deltaTs, i = icount()) %do% {
 # res <- par_sbatch(sites, lambda_optim_FUN, wFUN = wTSM, deltaT, is_extend,
 #                   return.res = TRUE, Save = TRUE,
 #                   outdir = paste0("OUTDIR/whit_lambda/v020", subfix))
-
 # a <- lambda_optim_FUN(sitename)
 # res <- lambda_optim_FUN(102)
 # deltaT <- 1 # current is 4 at GEE
