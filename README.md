@@ -39,7 +39,7 @@ model.
 Please note that there are four necessary steps when using this method,
 also shown in the above example:
 
-1.  Pre-process, mask NA values and initialize weights
+1.  Pre-process, unmask NA values and initialize weights
     
     If skip this step, it will lead to matrix dimensions not equal,
     matrix can’t be inversed …
