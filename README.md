@@ -13,11 +13,6 @@ Non-parametric weighted Whittaker smoothing in GEE
 
 ## Calibrate and Validate in R
 
-This package is just used to evaluate the performance of
-[gee\_Whittaker](https://github.com/kongdd/gee_packages/blob/master/Math/pkg_whit.js),
-which is hosted on another repository
-[gee\_packages](https://github.com/kongdd/gee_packages).
-
 The development version from [GitHub](https://github.com/) with:
 
 ``` r
@@ -32,9 +27,6 @@ library(whittaker)
 The following is the main GEE script of the simpler version Whittaker
 and an examples which smoothed 4-day MODIS LAI images in PML\_V2
 model.
-
-<https://github.com/kongdd/gee_packages/blob/master/Math/pkg_whit.js#L188>
-<https://github.com/kongdd/PML/blob/master/src/data_LAI_Whittaker.js>
 
 Please note that there are four necessary steps when using this method,
 also shown in the above example:
