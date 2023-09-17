@@ -1,8 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GEE Whittaker
-
+# GEE Whittaker Validation in R
+> Kong 2019, ISPRS
 <!-- badges: start -->
 
 [![AppVeyor build
