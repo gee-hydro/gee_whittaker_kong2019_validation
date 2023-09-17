@@ -11,11 +11,6 @@ status](https://ci.appveyor.com/api/projects/status/github/kongdd/gee_whittaker?
 
 Non-parametric weighted Whittaker smoothing in GEE
 
-> ### 为何gee_whittaker核心代码转为闭源
-> 
-> - 无人遵守开源代码协议GPL3
-> - 同类文章作者多不愿公开源代码
-
 ## Calibrate and Validate in R
 
 The development version from [GitHub](https://github.com/) with:
