@@ -2,14 +2,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # GEE Whittaker Validation in R
-> Kong 2019, ISPRS
+> Kong 2019, ISPRS, Non-parametric weighted Whittaker smoothing in GEE
 <!-- badges: start -->
 
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/kongdd/gee_whittaker?branch=master&svg=true)](https://ci.appveyor.com/project/kongdd/gee_whittaker)
-<!-- badges: end -->
-
-Non-parametric weighted Whittaker smoothing in GEE
+## Fix broken links in Kong2019 ISPRS
+Figure 6. `poly_1` (Sichuan): <https://code.earthengine.google.com/46813e807b1079cdf4bd27e2b3970faf>
 
 ## Calibrate and Validate in R
 
